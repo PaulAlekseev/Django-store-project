@@ -60,6 +60,9 @@ class StoreProduct(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     amount = models.IntegerField(default=1)
 
+    class Meta:
+        verbose_name_plural = 'Amount table'
+
 
 class Price(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
