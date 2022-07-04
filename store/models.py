@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 from mptt.models import TreeForeignKey, MPTTModel
 
@@ -36,20 +37,16 @@ class Product(models.Model):
     category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
     slug = models.SlugField(unique=True)
     description = models.TextField(max_length=300)
-    brand = models.CharField(max_length=50)
-    model = models.CharField(max_length=50)
     guarantee = models.IntegerField()
-    core = models.CharField(max_length=50)
-    socket = models.CharField(max_length=50)
-    total_cores = models.IntegerField()
-    total_threads = models.IntegerField()
-    frequency = models.DecimalField(max_digits=2, decimal_places=1)
-    cache = models.IntegerField()
-    bus_speed = models.IntegerField()
+    features = models.JSONField(null=True, blank=True)
+    is_active = models.BooleanField(default=False)
     availability = models.ManyToManyField(Store, through='StoreProduct')
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name_plural = 'Products'
+        ordering = ('-is_active', '-name', '-created')
 
     def __str__(self):
         return self.name
@@ -58,7 +55,7 @@ class Product(models.Model):
 class StoreProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
-    amount = models.IntegerField(default=1)
+    amount = models.IntegerField(default=0)
 
     class Meta:
         verbose_name_plural = 'Amount table'
@@ -71,10 +68,7 @@ class Price(models.Model):
 
     class Meta:
         verbose_name_plural = 'Prices'
+        ordering = ('product', '-date')
 
     def __str__(self):
-        return str(self.price_tag) + ' ' + str(self.date)
-
-
-
-
+        return str(self.product)
