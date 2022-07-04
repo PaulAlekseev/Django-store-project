@@ -1,10 +1,20 @@
 from django.contrib import admin
 
-from .models import Category, Store, Product, Price, StoreProduct
+from .models import Category, Store, Product, Price, StoreProduct, InnerCategory
+
+
+class InnerCategoriesInline(admin.TabularInline):
+    model = InnerCategory
+    extra = 1
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    prepopulated_fields = {"slug": ("name",)}
+    inlines = [InnerCategoriesInline]
+    prepopulated_fields = {'slug': ('name',)}
+
+
+class InnerCategoryAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('name',)}
 
 
 class PriceAdmin(admin.ModelAdmin):
@@ -35,6 +45,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(InnerCategory, InnerCategoryAdmin)
 admin.site.register(Store)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Price, PriceAdmin)

@@ -20,6 +20,24 @@ class Category(MPTTModel):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('store:category', args=[self.slug])
+
+
+class InnerCategory(models.Model):
+    name = models.CharField(max_length=100)
+    category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
+    slug = models.SlugField(unique=True)
+
+    class Meta:
+        verbose_name_plural = 'Categories_inner'
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('store:product_list', args=[self.slug])
+
 
 class Store(models.Model):
     name = models.CharField(max_length=150)
@@ -34,7 +52,7 @@ class Store(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=70)
-    category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
+    category = models.ForeignKey(InnerCategory, null=True, on_delete=models.SET_NULL)
     slug = models.SlugField(unique=True)
     description = models.TextField(max_length=300)
     guarantee = models.IntegerField()
