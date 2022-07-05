@@ -4,6 +4,11 @@ from django.urls import reverse
 from mptt.models import TreeForeignKey, MPTTModel
 
 
+class ProductManager(models.Manager):
+    def get_queryset(self):
+        return super(ProductManager, self).get_queryset().filter(is_active=True)
+
+
 class Category(MPTTModel):
     name = models.CharField(max_length=100)
     parent = TreeForeignKey('self',
@@ -56,11 +61,16 @@ class Product(models.Model):
     slug = models.SlugField(unique=True)
     description = models.TextField(max_length=300)
     guarantee = models.IntegerField()
-    features = models.JSONField(null=True, blank=True)
+    features = models.JSONField(null=True,
+                                blank=True,
+                                help_text='Additional information for different Categories')
+    price = models.IntegerField(help_text='Current price for this item')
     is_active = models.BooleanField(default=False)
     availability = models.ManyToManyField(Store, through='StoreProduct')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    objects = models.Manager()
+    products = ProductManager()
 
     class Meta:
         verbose_name_plural = 'Products'
@@ -79,9 +89,9 @@ class StoreProduct(models.Model):
         verbose_name_plural = 'Amount table'
 
 
-class Price(models.Model):
+class PriceStory(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    price_tag = models.IntegerField()
+    price_tag = models.IntegerField(help_text='Outdated price for comparison')
     date = models.DateTimeField(auto_now_add=True)
 
     class Meta:

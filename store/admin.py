@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Store, Product, Price, StoreProduct, InnerCategory
+from .models import Category, Store, Product, PriceStory, StoreProduct, InnerCategory
 
 
 class InnerCategoriesInline(admin.TabularInline):
@@ -22,7 +22,7 @@ class PriceAdmin(admin.ModelAdmin):
 
 
 class PriceInline(admin.TabularInline):
-    model = Price
+    model = PriceStory
     extra = 1
 
 
@@ -34,7 +34,7 @@ class AvailabilityInline(admin.TabularInline):
 class ProductAdmin(admin.ModelAdmin):
     fieldsets = [
         (None, {'fields': ['name', 'category', 'slug']}),
-        ('Information', {'fields': ['description', 'guarantee', 'features', ]}),
+        ('Information', {'fields': ['description', 'guarantee', 'features', 'price']}),
         ('Status', {'fields': ['is_active']}),
     ]
     inlines = [PriceInline, AvailabilityInline]
@@ -48,5 +48,5 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(InnerCategory, InnerCategoryAdmin)
 admin.site.register(Store)
 admin.site.register(Product, ProductAdmin)
-admin.site.register(Price, PriceAdmin)
+admin.site.register(PriceStory, PriceAdmin)
 admin.site.register(StoreProduct)
