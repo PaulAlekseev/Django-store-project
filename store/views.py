@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, HttpResponse
-from django.db.models import Max, Exists
-from .models import Category, InnerCategory, Product, PriceStory
+from django.db.models import Prefetch, Count, Avg, Q, Min, F
+from .models import Category, InnerCategory, Product, StoreProduct
 from django.views import generic
 
 
@@ -25,5 +25,13 @@ class CategoryListView(generic.list.ListView):
         return categories
 
 
-# def product_list(request, category_slug):
-#     products = Product.products.filter(category__slug=category_slug)
+class ProductListView(generic.list.ListView):
+    template_name = 'store/productList.html'
+    context_object_name = 'Products'
+
+    def get_queryset(self):
+        queryset = Product.products.filter(
+            category__slug=self.kwargs['category_slug']).annotate(
+            number_of_shops=Count('storeproduct', filter=Q(storeproduct__amount__gt=0))
+        )
+        return queryset
