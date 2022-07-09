@@ -3,6 +3,16 @@ from django.contrib import admin
 from .models import Category, Store, Product, PriceStory, StoreProduct, InnerCategory
 
 
+class PriceInline(admin.TabularInline):
+    model = PriceStory
+    extra = 1
+
+
+class AvailabilityInline(admin.TabularInline):
+    model = StoreProduct
+    extra = 1
+
+
 class InnerCategoriesInline(admin.TabularInline):
     model = InnerCategory
     extra = 1
@@ -19,16 +29,6 @@ class InnerCategoryAdmin(admin.ModelAdmin):
 
 class PriceAdmin(admin.ModelAdmin):
     list_display = ('product', 'date')
-
-
-class PriceInline(admin.TabularInline):
-    model = PriceStory
-    extra = 1
-
-
-class AvailabilityInline(admin.TabularInline):
-    model = StoreProduct
-    extra = 1
 
 
 class ProductAdmin(admin.ModelAdmin):
