@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
-from django.db.models import Count, Q, Subquery, F, Prefetch
-from .models import Category, InnerCategory, Product, PriceStory
+from django.db.models import Count, Q
+from .models import Category, InnerCategory, Product
 from django.views import generic
 
 
@@ -21,7 +21,7 @@ class CategoryListView(generic.list.ListView):
         inners = InnerCategory.objects.filter(category__slug=self.kwargs.get('slug'))
         if len(inners) > 0:
             return inners
-        categories = get_object_or_404(Category, slug=self.kwargs.get('slug')).get_descendants()
+        categories = Category.objects.get(slug=self.kwargs.get('slug')).get_descendants()
         return categories
 
 
