@@ -15,11 +15,9 @@ class BasketView(generic.list.ListView):
         basket = Basket(self.request)
         return basket
 
-
-def basket_add(request):
-    basket = Basket(request) 
-    data = request.POST
-    if data['action'] == 'post':
+    def post(self, request, *args, **kwargs):
+        basket = Basket(request) 
+        data = request.POST
         product_id = int(data['productid'])
         product_price = int(data['productprice'])
 
