@@ -6,6 +6,23 @@
 
 {% for item in Products %}
 {{ item.price }}{{ item.product.price }}
+<input type="text" id="{{ item.product.id }}" value="{{ item.amount }}" onchange="change(this)">
+<br>
 {% endfor %}
+<script>
 
+    function change(obj){
+        fetch('{% url "basket:basket_update" %}', {
+                method:'PATCH',
+                headers:{
+                    'Content-Type':'application/json',
+                    'X-CSRFToken':"{{csrf_token}}",
+                }, 
+                body:JSON.stringify({'productId':obj.id, 'productAmount': obj.value})
+            })
+            .then((response) => {})
+            .then((data) => {});
+    }
+
+</script>
 {% endblock %}

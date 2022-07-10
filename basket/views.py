@@ -1,10 +1,11 @@
-from urllib import request
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views import generic
 
 from store.models import Category
 from .basket import Basket
+
+import json
 
 
 class BasketView(generic.list.ListView):
@@ -24,3 +25,11 @@ class BasketView(generic.list.ListView):
         basket.add(product_id=product_id, price=product_price)
 
         return HttpResponse('1')
+    
+    def patch(self, request, *args, **kwargs):
+        basket = Basket(request)
+        data = json.loads(request.body)
+        print(data)
+
+        return HttpResponse('1')
+
