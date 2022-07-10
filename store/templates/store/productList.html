@@ -16,10 +16,32 @@
             <div class="card-header py-3">
                 <h4 class="">{{ item.price }} {{ item.number_of_shops }}</h4>
             </div>
+            <button onclick="clicked(this)" id="{{ item.id }}">Add to busket</button>
         </div>
       </div>
     </a>
     {% endfor %}
 </div>
+<script>
+  
+  function send_productId(id){
+    $.ajax({
+      type: "POST",
+      url: '{% url "basket:basket_add" %}',
+      data: {
+        productid: id,
+        csrfmiddlewaretoken: "{{csrf_token}}",
+        action: "post",
+      },
+      success: function () {},
+      error: function () {},
+    });
+  }
+
+  function clicked(obj) {
+    send_productId(obj.id);
+  }
+  
+</script>
 
 {% endblock %}
