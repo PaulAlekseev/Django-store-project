@@ -3,4 +3,9 @@
 {% block title %}Basket{% endblock %}
 
 {% block content %}
+
+{% for item in Products %}
+{{ item.price }}{{ item.product.price }}
+{% endfor %}
+
 {% endblock %}

@@ -16,7 +16,7 @@
             <div class="card-header py-3">
                 <h4 class="">{{ item.price }} {{ item.number_of_shops }}</h4>
             </div>
-            <button onclick="clicked(this)" id="{{ item.id }}">Add to busket</button>
+            <button onclick="clicked(this)" id="{{ item.id }}" data-price="{{ item.price }}">Add to busket</button>
         </div>
       </div>
     </a>
@@ -24,12 +24,13 @@
 </div>
 <script>
   
-  function send_productId(id){
+  function send_productId(obj){
     $.ajax({
       type: "POST",
       url: '{% url "basket:basket_add" %}',
       data: {
-        productid: id,
+        productprice: obj.dataset.price,
+        productid: obj.id,
         csrfmiddlewaretoken: "{{csrf_token}}",
         action: "post",
       },
@@ -39,7 +40,7 @@
   }
 
   function clicked(obj) {
-    send_productId(obj.id);
+    send_productId(obj);
   }
   
 </script>

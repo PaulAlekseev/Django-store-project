@@ -1,4 +1,5 @@
-from django.http import JsonResponse
+from urllib import request
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views import generic
 
@@ -8,11 +9,11 @@ from .basket import Basket
 
 class BasketView(generic.list.ListView):
     template_name = 'basket/basket.html'
-    model = Category
+    context_object_name = 'Products'
 
-    def get(self, request, *args, **kwargs):
-        # a = Basket(request)
-        return super().get(self, request, *args, **kwargs)
+    def get_queryset(self):
+        basket = Basket(self.request)
+        return basket
 
 
 def basket_add(request):
@@ -20,9 +21,8 @@ def basket_add(request):
     data = request.POST
     if data['action'] == 'post':
         product_id = int(data['productid'])
+        product_price = int(data['productprice'])
 
-        basket.add(product_id)
+        basket.add(product_id=product_id, price=product_price)
 
-        response = JsonResponse({'thing': 1})
-        basket.bruh()
-        return response
+        return HttpResponse('1')
