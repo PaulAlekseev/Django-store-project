@@ -46,6 +46,9 @@ class Basket:
         product_id = data['product_id']
 
         self.basket[str(product_id)]['amount'] = required_amount
+        
+        if required_amount <= 0:
+            self._delete_product(product_id)
 
         self._save()
 
@@ -55,3 +58,6 @@ class Basket:
     def _get_queryset(self, product_ids):
         self.query = Product.objects.filter(id__in=product_ids)
         return self.query
+
+    def _delete_product(self, product_id):
+        del self.basket[str(product_id)]
