@@ -5,23 +5,46 @@
 {% block content %}
 
 {% for item in Products %}
-{{ item.price }}{{ item.product.price }}
-<input type="text" id="{{ item.product.id }}" value="{{ item.amount }}" onchange="change(this)">
+name = {{ item.product.name }}<br>
+price = {{ item.product.price }}<br>
+total = {{ item.total }}<br>
+<input type="number" id="{{ item.product.id }}" value="{{ item.amount }}" onchange="change(this)">
+<br>
 <br>
 {% endfor %}
+<br>
+<div class="">Total price:<div id="total_price" class="">{{ Total_price }}</div></div>
 <script>
 
     function change(obj){
+
+        const total = document.getElementById('total_price');
+
         fetch('{% url "basket:basket_update" %}', {
                 method:'PATCH',
                 headers:{
                     'Content-Type':'application/json',
                     'X-CSRFToken':"{{csrf_token}}",
                 }, 
-                body:JSON.stringify({'productId':obj.id, 'productAmount': obj.value})
+                body:JSON.stringify({
+                    'product_id':obj.id,
+                    'product_amount': obj.value,
+                    'total_price': total.innerHTML,
+                })
             })
-            .then((response) => {})
-            .then((data) => {});
+            .then(response => response.json())
+        .then(data => {
+            if (data['agreement'] == false) {
+                obj.value = data['amount'];
+            }
+            else {
+                total.textContent = data['total'];
+            }
+        })
+        .catch((error) => {
+        console.error('Error:', error);
+        });
+        
     }
 
 </script>
