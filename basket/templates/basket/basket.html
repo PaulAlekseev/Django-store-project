@@ -5,12 +5,31 @@
 {% block content %}
 
 {% for item in Products %}
-name = {{ item.product.name }}<br>
-price = {{ item.product.price }}<br>
-total = {{ item.total }}<br>
-<input type="number" id="{{ item.product.id }}" value="{{ item.amount }}" onchange="change(this)">
+<div id="product-{{ item.product.id }}">
+    <div>
+        name = {{ item.product.name }}<br>
+    </div>
+    <div id="product-{{ item.product.id }}-price">
+        price = {{ item.product.price }}<br>
+    </div>
+    <div id="product-{{ item.product.id }}-price_total">
+        total = <span id="price-{{ item.product.id }}">{{ item.total }}</span><br>
+    </div>
+    {% if item.product.total_amount == 0 %}
+    <div>
+        <div>Out of stock</div>
+    </div>
+    {% else %}
+    <div>
+        <input type="number" id="value-{{ item.product.id }}" value="{{ item.amount }}" data-id="{{ item.product.id }}" onchange="change(this)">
+    </div>
+    {% endif %}
+    <br>
+    <button onclick="delete_object(this)" data-id="{{ item.product.id }}">Delete</button>
+
 <br>
 <br>
+</div>
 {% endfor %}
 <br>
 <div class="">Total price:<div id="total_price" class="">{{ Total_price }}</div></div>
@@ -19,6 +38,7 @@ total = {{ item.total }}<br>
     function change(obj){
 
         const total = document.getElementById('total_price');
+        const price = document.getElementById(`price-${obj.dataset.id}`);
 
         fetch('{% url "basket:basket_update" %}', {
                 method:'PATCH',
@@ -27,7 +47,7 @@ total = {{ item.total }}<br>
                     'X-CSRFToken':"{{csrf_token}}",
                 }, 
                 body:JSON.stringify({
-                    'product_id':obj.id,
+                    'product_id':obj.dataset.id,
                     'product_amount': obj.value,
                     'total_price': total.innerHTML,
                 })
@@ -39,6 +59,7 @@ total = {{ item.total }}<br>
             }
             else {
                 total.textContent = data['total'];
+                price.textContent = data['total_product'];
             }
         })
         .catch((error) => {
@@ -47,5 +68,29 @@ total = {{ item.total }}<br>
         
     }
 
+    function delete_object(obj){
+
+        const total = document.getElementById('total_price')
+
+        fetch('{% url "basket:basket_update" %}', {
+                method:'DELETE',
+                headers:{
+                    'Content-Type':'application/json',
+                    'X-CSRFToken':"{{csrf_token}}",
+                }, 
+                body:JSON.stringify({
+                    'product_id':obj.dataset.id,
+                    'total_price':total.innerHTML,
+                })
+            })
+            .then(response => response.json())
+        .then(data => {
+            obj.parentNode.remove();
+            total.textContent = data['total']
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
 </script>
 {% endblock %}

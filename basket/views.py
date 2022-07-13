@@ -26,9 +26,8 @@ class BasketView(generic.list.ListView):
         basket = Basket(request) 
         data = request.POST
         product_id = int(data['productid'])
-        product_price = int(data['productprice'])
 
-        basket.add(product_id=product_id, price=product_price)
+        basket.add(product_id=product_id)
 
         return HttpResponse('1')
     
@@ -46,7 +45,7 @@ class BasketView(generic.list.ListView):
 
         difference = required_amount - current_amount
         if product.overall_amount >= required_amount:
-            basket.update_item(data, required_amount)
+            basket.update_item(product_id, required_amount)
             responce_data['agreement'] = True
             responce_data['total_product'] = required_amount * product.price
             responce_data['total'] = int(data['total_price']) + difference * product.price
@@ -56,4 +55,22 @@ class BasketView(generic.list.ListView):
 
         response = JsonResponse(responce_data)
         return response
+
+    def delete(self, request, *args, **kwargs):
+        basket = Basket(request)
+        data = json.loads(request.body)
+        response_data = {}
+        product_id = data['product_id']
+        total_price = data['total_price']
+        current_amount = basket.basket[str(product_id)]['amount']
+        
+        product = Product.objects.get(id=product_id)
+
+        response_data['total'] = str(int(total_price) - product.price * current_amount)
+        
+        basket.delete_product(product_id)
+
+        responce = JsonResponse(response_data)
+        return responce
+
 

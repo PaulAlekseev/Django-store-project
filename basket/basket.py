@@ -1,3 +1,7 @@
+from copy import deepcopy
+
+from django.db.models import Sum
+
 from store.models import Product
 
 
@@ -12,7 +16,7 @@ class Basket:
             basket = self.session['basket'] = {}
         self.basket = basket
 
-    def add(self, product_id, price):
+    def add(self, product_id):
         product_id = str(product_id)
 
         if product_id in self.basket:
@@ -28,12 +32,18 @@ class Basket:
             products = self._get_queryset(product_ids)
         else:
             products = self.query
-        basket = self.basket.copy()
+        basket = deepcopy(self.basket)
 
         for product in products:
             basket[str(product.id)]['product'] = product
+            basket[str(product.id)]['total_amount'] = product.total_amount
+            
         
         for item in basket.values():
+            if item['amount'] > item['total_amount']:
+                item['amount'] = item['total_amount']
+                self.basket[str(item['product'].id)]['amount'] = item['total_amount']
+                self._save()
             item['total'] = item['amount'] * item['product'].price
             yield item
 
@@ -42,13 +52,16 @@ class Basket:
 
         self._save()
 
-    def update_item(self, data, required_amount):
-        product_id = data['product_id']
+    def update_item(self, product_id, required_amount):
+        if required_amount < 0:
+            self.basket[str(product_id)]['amount'] = 0
+        else:
+            self.basket[str(product_id)]['amount'] = required_amount
+            
+        self._save()
 
-        self.basket[str(product_id)]['amount'] = required_amount
-        
-        if required_amount <= 0:
-            self._delete_product(product_id)
+    def delete_product(self, product_id):
+        del self.basket[str(product_id)]
 
         self._save()
 
@@ -56,8 +69,7 @@ class Basket:
         self.session.modified = True
 
     def _get_queryset(self, product_ids):
-        self.query = Product.objects.filter(id__in=product_ids)
+        self.query = Product.objects.filter(id__in=product_ids).annotate(
+            total_amount= Sum('storeproduct__amount')
+        )
         return self.query
-
-    def _delete_product(self, product_id):
-        del self.basket[str(product_id)]
