@@ -1,0 +1,40 @@
+{% extends 'general/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<form method="post" action="{% url 'authentication:registration' %}">
+    {% csrf_token %}
+    {% if form.errors %}
+    <p>Please correct the following errors:</p>
+    {% for field in form %}
+    {% if field.errors %}
+    <div class="alert alert-primary" role="alert">
+        {{ field.label }}: {{ field.errors|striptags }}
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    <table>
+        <tr>
+            <td>{{ form.username.label_tag }}</td>
+            <td>{{ form.username }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.email.label_tag }}</td>
+            <td>{{ form.email }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.password.label_tag }}</td>
+            <td>{{ form.password }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.password2.label_tag }}</td>
+            <td>{{ form.password2 }}</td>
+        </tr>
+    </table>
+    <input type="submit" value="registration">
+</form>
+
+{% endblock %}

@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from django.db.models import Count, Q
 from .models import Category, InnerCategory, Product
 from django.views import generic
