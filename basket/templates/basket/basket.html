@@ -15,7 +15,7 @@
     <div id="product-{{ item.product.id }}-price_total">
         total = <span id="price-{{ item.product.id }}">{{ item.total }}</span><br>
     </div>
-    {% if item.product.total_amount == 0 %}
+    {% if item.total_amount == 0 %}
     <div>
         <div>Out of stock</div>
     </div>
@@ -56,6 +56,13 @@
         .then(data => {
             if (data['agreement'] == false) {
                 obj.value = data['amount'];
+            }
+            else if(data['agreement'] == 'Out of stock') {
+                const parent = obj.parentNode;
+                obj.remove();
+                const element = document.createElement('div');
+                parent.append(element);
+                element.textContent = 'Out of stock';
             }
             else {
                 total.textContent = data['total'];

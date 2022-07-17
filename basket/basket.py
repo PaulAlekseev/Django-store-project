@@ -36,7 +36,7 @@ class Basket:
 
         for product in products:
             basket[str(product.id)]['product'] = product
-            basket[str(product.id)]['total_amount'] = product.total_amount
+            basket[str(product.id)]['total_amount'] = product.total_amount if product.total_amount != None else 0
         
         for item in basket.values():
             if item['amount'] > item['total_amount']:

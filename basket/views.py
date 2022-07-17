@@ -44,14 +44,17 @@ class BasketView(generic.list.ListView):
             )[0]
 
         difference = required_amount - current_amount
-        if product.overall_amount >= required_amount:
-            basket.update_item(product_id, required_amount)
-            responce_data['agreement'] = True
-            responce_data['total_product'] = required_amount * product.price
-            responce_data['total'] = int(data['total_price']) + difference * product.price
+        if product.overall_amount:
+            if product.overall_amount >= required_amount and required_amount >= 0:
+                basket.update_item(product_id, required_amount)
+                responce_data['agreement'] = True
+                responce_data['total_product'] = required_amount * product.price
+                responce_data['total'] = int(data['total_price']) + difference * product.price
+            else:
+                responce_data['agreement'] = False
+                responce_data['amount'] = current_amount
         else:
-            responce_data['agreement'] = False
-            responce_data['amount'] = current_amount
+            responce_data['agreement'] = 'Out of stock'
 
         response = JsonResponse(responce_data)
         return response
