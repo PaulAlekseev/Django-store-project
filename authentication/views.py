@@ -34,11 +34,7 @@ class RegistrationFormView(generic.edit.FormView):
 
     def form_valid(self, form):
         form = self.get_form()
-        user = form.save(commit=False)
-        user.email = form.cleaned_data['email']
-        user.set_password(form.cleaned_data['password'])
-        user.is_active = False
-        user.save()
+        user = form.save()
         current_site = get_current_site(self.request)
         subject = 'Activate your Account'
         message = render_to_string('authentication/user_activation_email.html', {
