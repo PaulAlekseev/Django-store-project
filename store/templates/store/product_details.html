@@ -1,0 +1,11 @@
+{% extends 'general/base.html' %}
+
+{% block title %}{{ Product.name }}{% endblock %}
+
+
+{% block content %}
+
+{{ Product.name }}
+{{ Product.features.fields.some_field}}
+
+{% endblock %}

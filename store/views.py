@@ -25,7 +25,7 @@ class CategoryListView(generic.list.ListView):
 
 
 class ProductListView(generic.list.ListView):
-    template_name = 'store/productList.html'
+    template_name = 'store/product_list.html'
     context_object_name = 'Products'
 
     def get_queryset(self):
@@ -39,3 +39,8 @@ class ProductListView(generic.list.ListView):
         context['Category'] = InnerCategory.objects.get(slug=self.kwargs['category_slug'])
         return context
 
+
+class ProductDetailView(generic.detail.DetailView):
+    template_name = 'store/product_details.html'
+    model = Product
+    context_object_name = 'Product'

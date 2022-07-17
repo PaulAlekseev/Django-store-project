@@ -33,6 +33,10 @@ class InnerCategory(models.Model):
     name = models.CharField(max_length=100)
     category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
     slug = models.SlugField(unique=True)
+    features = models.JSONField(null=True,
+                                blank=True,
+                                help_text='features used for filter purpose'
+    )
 
     class Meta:
         verbose_name_plural = 'Categories_inner'
@@ -42,6 +46,25 @@ class InnerCategory(models.Model):
 
     def get_absolute_url(self):
         return reverse('store:product_list', args=[self.slug])
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        features = self.features
+        if features == None:
+            features = {}
+        if 'fields' not in features:
+            features['fields'] = {}
+        if 'requested_fields' not in features:
+            features['requested_fields'] = []
+        if 'allowed_fields' not in features:
+            features['allowed_fields'] = {}
+        for key in features['requested_fields']:
+            if key not in features['fields']:
+                features['fields'][key] = []
+        for key in features['fields'].copy():
+            if key not in features['requested_fields']:
+                del features['fields'][key]
+        self.features = features
+        super().save(force_insert, force_update, using, update_fields)
 
 
 class Store(models.Model):
@@ -64,7 +87,7 @@ class Product(models.Model):
     features = models.JSONField(null=True,
                                 blank=True,
                                 help_text='Additional information for different Categories')
-    price = models.IntegerField(help_text='Current price for this item')
+    price = models.IntegerField(null=False, blank=False, help_text='Current price for this item')
     is_active = models.BooleanField(default=False)
     availability = models.ManyToManyField(Store, through='StoreProduct')
     created = models.DateTimeField(auto_now_add=True)
@@ -78,6 +101,27 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('store:product_detail', args=[self.slug])
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        category = InnerCategory.objects.get(id=self.category.id)
+        category_features = category.features
+        requested_fields = category.features['requested_fields']
+
+        for key, item in self.features.items():
+            if key not in requested_fields:
+                continue
+            if key not in category_features['fields']:
+                category_features['fields'][key] = [item]
+                category.save()
+                continue
+            if item in category_features['fields'][key]:
+                continue
+            category_features['fields'][key].append(item)
+            category.save()
+        return super().save(force_insert, force_update, using, update_fields)
 
 
 class StoreProduct(models.Model):
