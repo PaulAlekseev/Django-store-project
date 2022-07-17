@@ -1,9 +1,10 @@
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import login
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
+from django.urls import reverse_lazy, reverse
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.shortcuts import resolve_url, redirect
@@ -27,7 +28,7 @@ class CustomLogoutView(LoginRequiredMixin, LogoutView):
     next_page = 'store:index'
     
 
-class RegistrationFormView(generic.edit.FormView):
+class UserRegistrationFormView(generic.edit.FormView):
     template_name = 'authentication/registration.html'
     form_class = RegistrationForm
     success_url = 'store:index'
@@ -52,7 +53,7 @@ class RegistrationFormView(generic.edit.FormView):
         return resolve_url(str(self.success_url))
 
 
-class ActivationView(generic.base.View):
+class UserActivationView(generic.base.View):
     
     def get(self, *args, **kwargs):
         try:
@@ -72,3 +73,22 @@ class ActivationView(generic.base.View):
 class UserProfileView(generic.list.ListView, LoginRequiredMixin):
     template_name = 'authentication/profile.html'
     model = Category
+
+
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'authentication/password_reset_form.html'
+    email_template_name = "authentication/password_reset_email.html"
+    success_url = reverse_lazy('authentication:password_reset_done')
+    
+
+class CustomPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'authentication/password_reset_done.html'
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'authentication/password_reset_confirm.html'
+    success_url = reverse_lazy('authentication:password_reset_complete')
+
+
+class CustomPassworwResetCompleteView(PasswordResetCompleteView):
+    template_name = 'authentication/password_reset_complete.html'
