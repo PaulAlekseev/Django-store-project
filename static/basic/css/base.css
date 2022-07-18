@@ -1,0 +1,15 @@
+*{
+    box-sizing: border-box;
+}
+
+body{
+    background-color: #ccc;
+}
+
+.filters{
+    background-color: #fff;
+    border: solid 1px grey;
+    padding: 10px;
+    text-align: center;
+    border-radius: 15px;
+}

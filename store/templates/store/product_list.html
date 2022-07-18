@@ -6,21 +6,36 @@
 <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
       <h1 class="display-4 fw-normal">{{ Category }}</h1>
 </div>
-<div class="row row-cols-1 row-cols-md-4 mb-1 text-center">
-    {% for item in Products %}
-      <div class="col">
-        <div class="card mb-4 rounded-3 shadow-sm" style="height: 20rem;">
-          <div class="card-body">
-          </div>
-          <a href="{{ item.get_absolute_url }}">
-            <div class="card-header py-3">
-                <h4 class="">{{ item.name }} {{ item.price }} {{ item.number_of_shops }}</h4>
-            </div>
-          </a>
-            <button onclick="clicked(this)" id="{{ item.id }}" data-price="{{ item.price }}">Add to basket</button>
+<div class="product_list row"> 
+  <div class="col-2">
+    <div class="filters">
+      {% for field, values in Category.features.fields.items %}
+      <span>{{ field }}</span>
+      <div class="row row-cols-auto" name="myfilters">
+        {% for value in values %}
+        <div class="col-4">
+          <input type="checkbox" id="{{ field }}" name="filter_checkbox" data-value="{{ value }}" onclick="checkbox_clicked(this)">
+          <label for="bruh">{{ value }}</label>
         </div>
+        {% endfor %}
       </div>
-    {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+        <div class="col">
+      {% for item in Products %}
+          <div class="card mb-4 rounded-3 shadow-sm" style="height: 20rem;">
+            <div class="card-body">
+            </div>
+            <a href="{{ item.get_absolute_url }}">
+              <div class="card-header py-3">
+                  <h4 class="">{{ item.name }} {{ item.price }} {{ item.number_of_shops }}</h4>
+              </div>
+            </a>
+              <button onclick="clicked(this)" id="{{ item.id }}" data-price="{{ item.price }}">Add to basket</button>
+          </div>
+      {% endfor %}
+        </div>
 </div>
 <script>
   
@@ -41,6 +56,40 @@
   function clicked(obj) {
     send_productId(obj);
   }
+
+
+  function find_checked(obj) {
+    const checkboxes = document.getElementsByName(obj.name);
+    var checkboxes_checked = {};
+    checkboxes.forEach(element => {
+      if (element.checked) {
+        if (checkboxes_checked[element.id] == null) {
+          checkboxes_checked[element.id] = [];
+        }
+        checkboxes_checked[element.id].push(element.dataset.value);
+      }
+    });
+    return checkboxes_checked;
+  }
+
+
+  function checkbox_clicked(obj) {
+    const checkboxes = find_checked(obj);
+    fetch('{% url "store:filter" slug %}', {
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json',
+                    'X-CSRFToken':"{{csrf_token}}",
+                }, 
+                body:JSON.stringify(checkboxes)
+            })
+            .then(response => response.json())
+        .then(data => {})
+        .catch((error) => {
+        console.error('Error:', error);
+        });
+  }
+  
   
 </script>
 

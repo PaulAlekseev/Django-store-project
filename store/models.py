@@ -47,22 +47,24 @@ class InnerCategory(models.Model):
     def get_absolute_url(self):
         return reverse('store:product_list', args=[self.slug])
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None, sort=True):
         features = self.features
+
         if features == None:
             features = {}
         if 'fields' not in features:
             features['fields'] = {}
         if 'requested_fields' not in features:
             features['requested_fields'] = []
-        if 'allowed_fields' not in features:
-            features['allowed_fields'] = {}
         for key in features['requested_fields']:
             if key not in features['fields']:
                 features['fields'][key] = []
         for key in features['fields'].copy():
             if key not in features['requested_fields']:
                 del features['fields'][key]
+        if sort:
+            for key in features['fields'].keys():
+                features['fields'][key] = sorted(features['fields'][key])
         self.features = features
         super().save(force_insert, force_update, using, update_fields)
 
@@ -106,21 +108,24 @@ class Product(models.Model):
         return reverse('store:product_detail', args=[self.slug])
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        category = InnerCategory.objects.get(id=self.category.id)
-        category_features = category.features
-        requested_fields = category.features['requested_fields']
 
-        for key, item in self.features.items():
-            if key not in requested_fields:
-                continue
-            if key not in category_features['fields']:
-                category_features['fields'][key] = [item]
+        if self.features:
+            category = InnerCategory.objects.get(id=self.category.id)
+            category_features = category.features
+            requested_fields = category.features['requested_fields']
+
+            for key, item in self.features.items():
+                if key not in requested_fields:
+                    continue
+                if key not in category_features['fields']:
+                    category_features['fields'][key] = [item]
+                    category.save()
+                    continue
+                if item in category_features['fields'][key]:
+                    continue
+                category_features['fields'][key].append(item)
                 category.save()
-                continue
-            if item in category_features['fields'][key]:
-                continue
-            category_features['fields'][key].append(item)
-            category.save()
+    
         return super().save(force_insert, force_update, using, update_fields)
 
 
