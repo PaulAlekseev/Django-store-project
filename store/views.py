@@ -1,7 +1,12 @@
+from urllib import response
 from django.db.models import Count, Q
-from django.http import HttpResponse
-from .models import Category, InnerCategory, Product
+from django.http import JsonResponse
 from django.views import generic
+
+from .models import Category, InnerCategory, Product
+from .custom.handlers.string_handlers import envelop
+from .custom.handlers.query_handlers import query_to_json
+from .custom.annotations import get_annotated_category
 
 import json
 
@@ -33,10 +38,9 @@ class ProductListView(generic.list.ListView):
 
     def get_queryset(self):
         queryset = Product.products.filter(
-            category__slug=self.kwargs['category_slug']).annotate(
-            number_of_shops=Count('storeproduct', filter=Q(storeproduct__amount__gt=0)))
-        bruh = Product.objects.filter(features__bruh__in=[2, 3], features__nobruh__in=[4])
-        print(bruh)
+            category__slug=self.kwargs['category_slug']
+            )
+        queryset = get_annotated_category(queryset)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -47,10 +51,21 @@ class ProductListView(generic.list.ListView):
 
     def post(self, request, slug):
         data = json.loads(request.body)
-        print(data)
-        query = Product.objects.extra(where=["('store_product' -> 'features' -> 'bruh') IN ('2', '3') AND ('store_product' -> 'features' -> 'nobruh') IN ('4')"])
-        print(query)
-        return HttpResponse('1')
+        if data:
+            extra_filter = " AND ".join([
+                f"store_product.features -> '{key}' IN {envelop(value[0]) if len(value) == 1 else tuple(value)}" for key, value in data.items()
+                ])
+            query = Product.objects.filter(category__slug=slug).extra(
+                where=[extra_filter]
+                )
+        else:
+            query = Product.products.filter(
+            category__slug=slug
+            )
+
+        query = get_annotated_category(query)
+        response = JsonResponse(query_to_json(query))
+        return response
 
 
 class ProductDetailView(generic.detail.DetailView):

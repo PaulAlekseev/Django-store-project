@@ -6,7 +6,7 @@
 <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
       <h1 class="display-4 fw-normal">{{ Category }}</h1>
 </div>
-<div class="product_list row"> 
+<div class="product_list row">
   <div class="col-2">
     <div class="filters">
       {% for field, values in Category.features.fields.items %}
@@ -22,17 +22,15 @@
       {% endfor %}
     </div>
   </div>
-        <div class="col">
+        <div class="products col"1>
       {% for item in Products %}
-          <div class="card mb-4 rounded-3 shadow-sm" style="height: 20rem;">
-            <div class="card-body">
-            </div>
+          <div class="card mb-4 rounded-3 shadow-sm">
             <a href="{{ item.get_absolute_url }}">
               <div class="card-header py-3">
-                  <h4 class="">{{ item.name }} {{ item.price }} {{ item.number_of_shops }}</h4>
+                  <h4 class="">{{ item.name }}{{ item.number_of_shops }}</h4>
               </div>
             </a>
-              <button onclick="clicked(this)" id="{{ item.id }}" data-price="{{ item.price }}">Add to basket</button>
+              <button onclick="clicked(this)" id="{{ item.id }}">Add to basket</button>
           </div>
       {% endfor %}
         </div>
@@ -44,7 +42,6 @@
       type: "POST",
       url: '{% url "basket:basket_add" %}',
       data: {
-        productprice: obj.dataset.price,
         productid: obj.id,
         csrfmiddlewaretoken: "{{csrf_token}}",
       },
@@ -72,7 +69,34 @@
     return checkboxes_checked;
   }
 
+  function create_product(parent, url, id, name, number) {
+    const element = document.createElement('div');
+    element.setAttribute('class', 'card mb-4 rounded-3 shadow-sm');
+    const element2 = document.createElement('a');
+    element2.setAttribute('href', url);
+    const element3 = document.createElement('div');
+    element3.setAttribute('class', 'card-header py-3')
+    const element4 = document.createElement('h4');
+    element4.setAttribute('class', '');
+    const element5 = document.createElement('button');
+    element5.setAttribute('onclick', 'clicked(this)');
+    element5.setAttribute('id', id);
+    element4.textContent = name+number;
+    element5.textContent = 'Add to basket';
+    element3.append(element4);
+    element2.append(element3);
+    element.append(element2);
+    element.append(element5)
+    parent.append(element);
+  }
 
+  function create(dict) {
+    const parent = document.querySelector('.products');
+    for (item in dict) {
+      create_product(parent, dict[item]['url'], dict[item]['id'], dict[item]['name'], dict[item]['number']);
+    }
+  }
+  
   function checkbox_clicked(obj) {
     const checkboxes = find_checked(obj);
     fetch('{% url "store:filter" slug %}', {
@@ -84,7 +108,11 @@
                 body:JSON.stringify(checkboxes)
             })
             .then(response => response.json())
-        .then(data => {})
+        .then(data => {
+          cards = document.querySelectorAll('.card');
+          cards.forEach(element => element.remove());
+          create(data);
+        })
         .catch((error) => {
         console.error('Error:', error);
         });
