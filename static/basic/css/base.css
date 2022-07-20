@@ -2,14 +2,30 @@
     box-sizing: border-box;
 }
 
-body{
-    background-color: #ccc;
+body {
+    background-color: rgb(230, 224, 224);
 }
 
-.filters{
-    background-color: #fff;
-    border: solid 1px grey;
+.filters {
+    background-color: rgb(255, 255, 255);
+    border: solid 1px rgb(175, 175, 175);
     padding: 10px;
     text-align: center;
     border-radius: 15px;
+}
+
+.products {
+    background-color: rgb(255, 255, 255);
+    border: solid 1px rgb(175, 175, 175);
+    padding: 10px;
+    text-align: center;
+    border-radius: 15px;
+}
+
+.card {
+    min-height: 200px;
+}
+
+.navigation {
+    padding: 10px;
 }

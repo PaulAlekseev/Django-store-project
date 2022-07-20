@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import mimetypes
 from pathlib import Path
 import os
 
@@ -148,3 +149,6 @@ if DEBUG:
         'debug_toolbar',
     ]
     INTERNAL_IPS = ['127.0.0.1', ]
+
+    mimetypes
+    mimetypes.add_type("application/javascript", ".js", True)

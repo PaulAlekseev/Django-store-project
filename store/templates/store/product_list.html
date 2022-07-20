@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
-      <h1 class="display-4 fw-normal">{{ Category }}</h1>
+      <h1 class="display-4 fw-normal">{{ Category }}{{ Category.amount }}</h1>
 </div>
 <div class="product_list row">
   <div class="col-2">
@@ -13,16 +13,16 @@
       <span>{{ field }}</span>
       <div class="row row-cols-auto" name="myfilters">
         {% for value in values %}
-        <div class="col-4">
+        <div class="col-6">
           <input type="checkbox" id="{{ field }}" name="filter_checkbox" data-value="{{ value }}" onclick="checkbox_clicked(this)">
-          <label for="bruh">{{ value }}</label>
+          <label>{{ value }}</label>
         </div>
         {% endfor %}
       </div>
       {% endfor %}
     </div>
   </div>
-        <div class="products col"1>
+        <div class="products col">
       {% for item in Products %}
           <div class="card mb-4 rounded-3 shadow-sm">
             <a href="{{ item.get_absolute_url }}">
@@ -34,6 +34,19 @@
           </div>
       {% endfor %}
         </div>
+
+</div>
+
+<div class="pagination">
+  <nav class="step-links">
+    <ul>
+      {% for page in paginator.page_range %}
+      <li class="page-num">
+        <a href="?page={{ page }}">{{ page }}</a>
+      </li>
+      {% endfor %}
+    </ul>      
+  </nav>
 </div>
 <script>
   
@@ -69,33 +82,7 @@
     return checkboxes_checked;
   }
 
-  function create_product(parent, url, id, name, number) {
-    const element = document.createElement('div');
-    element.setAttribute('class', 'card mb-4 rounded-3 shadow-sm');
-    const element2 = document.createElement('a');
-    element2.setAttribute('href', url);
-    const element3 = document.createElement('div');
-    element3.setAttribute('class', 'card-header py-3')
-    const element4 = document.createElement('h4');
-    element4.setAttribute('class', '');
-    const element5 = document.createElement('button');
-    element5.setAttribute('onclick', 'clicked(this)');
-    element5.setAttribute('id', id);
-    element4.textContent = name+number;
-    element5.textContent = 'Add to basket';
-    element3.append(element4);
-    element2.append(element3);
-    element.append(element2);
-    element.append(element5)
-    parent.append(element);
-  }
-
-  function create(dict) {
-    const parent = document.querySelector('.products');
-    for (item in dict) {
-      create_product(parent, dict[item]['url'], dict[item]['id'], dict[item]['name'], dict[item]['number']);
-    }
-  }
+  
   
   function checkbox_clicked(obj) {
     const checkboxes = find_checked(obj);
@@ -105,13 +92,15 @@
                     'Content-Type':'application/json',
                     'X-CSRFToken':"{{csrf_token}}",
                 }, 
-                body:JSON.stringify(checkboxes)
+                body:JSON.stringify({
+                  'checkboxes': checkboxes,
+                  'category_slug': '{{ Category.slug }}',
+                })
             })
             .then(response => response.json())
         .then(data => {
-          cards = document.querySelectorAll('.card');
-          cards.forEach(element => element.remove());
-          create(data);
+          console.log(data);
+          window.location.href = data['href'];
         })
         .catch((error) => {
         console.error('Error:', error);
