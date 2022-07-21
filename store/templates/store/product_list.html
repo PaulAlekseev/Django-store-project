@@ -9,17 +9,22 @@
 <div class="product_list row">
   <div class="col-2">
     <div class="filters">
+      {% if not Category.features.fields.items %}
+      <span>There is no filters</span>
+      {% else %}
       {% for field, values in Category.features.fields.items %}
       <span>{{ field }}</span>
       <div class="row row-cols-auto" name="myfilters">
         {% for value in values %}
         <div class="col-6">
-          <input type="checkbox" id="{{ field }}" name="filter_checkbox" data-value="{{ value }}" onclick="checkbox_clicked(this)">
+          <input class="filter_checkbox" type="checkbox" id="{{ field }}" name="{{field}}-{{value}}" data-value="{{ value }}">
           <label>{{ value }}</label>
         </div>
         {% endfor %}
       </div>
       {% endfor %}
+      <button type="button" class="btn btn-primary btn-sm" onclick="checkbox_clicked(this)">Apply</button>
+      {% endif %}
     </div>
   </div>
         <div class="products col">
@@ -50,6 +55,21 @@
 </div>
 <script>
   
+  function htmlDecode(text) {
+  const decoded = text.replace(/&#x([0-9a-f]+);/gi, (_, code) =>
+    String.fromCharCode(parseInt(code, 16))
+  );
+  return decoded;
+};
+  
+  var coded = '{{ checkboxes }}'.split('~');
+  // const splited = coded.split('~');
+
+  coded.forEach(element => {
+    const checkbox = document.getElementsByName(element)[0];
+    checkbox.checked = 'yes';
+  })
+  
   function send_productId(obj){
     $.ajax({
       type: "POST",
@@ -69,7 +89,7 @@
 
 
   function find_checked(obj) {
-    const checkboxes = document.getElementsByName(obj.name);
+    const checkboxes = document.querySelectorAll(".filter_checkbox");
     var checkboxes_checked = {};
     checkboxes.forEach(element => {
       if (element.checked) {

@@ -41,36 +41,36 @@ class ProductListView(generic.list.ListView):
         products = Product.products.filter(
             category__slug=self.kwargs['category_slug']
             ).order_by('name')
+        data=None
 
         if filters != 'start':
             data = string_to_JSON(filters)
-            extra_filter = " AND ".join([
+            extra_filter = " OR ".join([
                 f"store_product.features -> '{key}' IN {envelop(value[0]) if len(value) == 1 else tuple(value)}" for key, value in data.items()
                 ])
             products = products.extra(
                 where=[extra_filter]
                 )
+        self.kwargs['filters'] = data
 
         queryset = get_annotated_products(products)
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Category'] = InnerCategory.objects.annotate(
-            amount=Count('product')
-            ).get(slug=self.kwargs['category_slug'])
+        context['Category'] = InnerCategory.objects.get(slug=self.kwargs['category_slug'])
         context['slug'] = self.kwargs['category_slug']
-        context['num_pages'] = context['Category'].amount
+        filters = self.kwargs['filters']
+        if filters:
+            context['checkboxes'] = '~'.join([key+'-'+value for key, values in filters.items() for value in values])
+        else:
+            context['checkboxes'] = []
         return context
 
     def post(self, request, slug):
         data = json.loads(request.body)
         filters = JSON_to_string(data['checkboxes'])
         slug = data['category_slug']
-        args = {
-            'category_slug': slug,
-            'filters': filters,
-            }
         if filters == '':
             filters = 'start'
         hello = JsonResponse({'href': reverse('store:product_list', args=[slug, filters])})
