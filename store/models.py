@@ -44,8 +44,8 @@ class InnerCategory(models.Model):
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self,filters='start'):
-        return reverse('store:product_list', args=[self.slug, filters])
+    def get_absolute_url(self):
+        return reverse('store:product_list', args=[self.slug])
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None, sort=True):
         features = self.features

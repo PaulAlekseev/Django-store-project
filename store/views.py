@@ -4,7 +4,7 @@ from django.views import generic
 from django.urls import reverse
 
 from .models import Category, InnerCategory, Product
-from .custom.handlers.string_handlers import envelop, JSON_to_string, string_to_JSON
+from .custom.handlers.string_handlers import envelop, string_to_JSON
 from .custom.annotations import get_annotated_products
 
 import json
@@ -37,13 +37,13 @@ class ProductListView(generic.list.ListView):
     context_object_name = 'Products'
 
     def get_queryset(self):
-        filters = self.kwargs['filters']
+        filters = self.kwargs.get('filters')
         products = Product.products.filter(
             category__slug=self.kwargs['category_slug']
             ).order_by('name')
         data=None
 
-        if filters != 'start':
+        if filters:
             data = string_to_JSON(filters)
             extra_filter = " OR ".join([
                 f"store_product.features -> '{key}' IN {envelop(value[0]) if len(value) == 1 else tuple(value)}" for key, value in data.items()
@@ -66,15 +66,6 @@ class ProductListView(generic.list.ListView):
         else:
             context['checkboxes'] = []
         return context
-
-    def post(self, request, slug):
-        data = json.loads(request.body)
-        filters = JSON_to_string(data['checkboxes'])
-        slug = data['category_slug']
-        if filters == '':
-            filters = 'start'
-        hello = JsonResponse({'href': reverse('store:product_list', args=[slug, filters])})
-        return hello
 
 
 class ProductDetailView(generic.detail.DetailView):

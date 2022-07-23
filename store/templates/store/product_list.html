@@ -55,20 +55,16 @@
 </div>
 <script>
   
-  function htmlDecode(text) {
-  const decoded = text.replace(/&#x([0-9a-f]+);/gi, (_, code) =>
-    String.fromCharCode(parseInt(code, 16))
-  );
-  return decoded;
-};
-  
+window.onload = function() {
   var coded = '{{ checkboxes }}'.split('~');
-  // const splited = coded.split('~');
 
+  if (coded != '[]') {
   coded.forEach(element => {
     const checkbox = document.getElementsByName(element)[0];
     checkbox.checked = 'yes';
   })
+  }
+}
   
   function send_productId(obj){
     $.ajax({
@@ -106,27 +102,15 @@
   
   function checkbox_clicked(obj) {
     const checkboxes = find_checked(obj);
-    fetch('{% url "store:filter" slug %}', {
-                method:'POST',
-                headers:{
-                    'Content-Type':'application/json',
-                    'X-CSRFToken':"{{csrf_token}}",
-                }, 
-                body:JSON.stringify({
-                  'checkboxes': checkboxes,
-                  'category_slug': '{{ Category.slug }}',
-                })
-            })
-            .then(response => response.json())
-        .then(data => {
-          console.log(data);
-          window.location.href = data['href'];
-        })
-        .catch((error) => {
-        console.error('Error:', error);
-        });
+    const filters = [];
+    for (const [key, value] of Object.entries(checkboxes)) {
+      filters.push(key + '=' + value.join("~"));
+    }
+    const filter_string = filters.join('&');
+    console.log(filter_string);
+    const url = '{% url "store:product_list" slug %}' + filter_string;
+    window.location.href = url;
   }
-  
   
 </script>
 
