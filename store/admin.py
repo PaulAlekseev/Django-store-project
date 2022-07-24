@@ -44,9 +44,15 @@ class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
 
 
+class StoreProductAdmin(admin.ModelAdmin):
+    list_display = ('product', 'store', 'amount')
+
+    ordering = ('-product', )
+
+
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(InnerCategory, InnerCategoryAdmin)
 admin.site.register(Store)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(PriceStory, PriceAdmin)
-admin.site.register(StoreProduct)
+admin.site.register(StoreProduct, StoreProductAdmin)

@@ -137,6 +137,9 @@ class StoreProduct(models.Model):
     class Meta:
         verbose_name_plural = 'Amount table'
 
+    def __str__(self):
+        return self.product.name + ' from ' + self.store.name
+
 
 class PriceStory(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

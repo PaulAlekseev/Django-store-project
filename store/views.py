@@ -36,7 +36,6 @@ class ProductListView(generic.list.ListView):
 
     def get_queryset(self):
         request_filters = self.request.GET
-        print(request_filters)
         filters = request_filters.get('filters')
         search_for = request_filters.get('search')
         products = Product.products.filter(
@@ -85,8 +84,6 @@ class SearchListView(generic.list.ListView):
     context_object_name = 'Products'
 
     def get_queryset(self):
-        for key, item in self.request.GET.items():
-            print(key, item)
         search_for = self.request.GET.get('search_form')
         query = Product.products.filter(name__icontains=search_for).select_related(
             'category'

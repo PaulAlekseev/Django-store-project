@@ -4,6 +4,17 @@
 
 {% block content %}
 
+<div>
+    <button class="store-of-choise btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+        Choose store
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        {% for store in Stores %}
+        <li><span class="dropdown-item" onclick="changeStore(this)">{{ store.name }}</span></li>
+        {% endfor %}
+    </ul>
+</div>
+<div class="products_basket">
 {% for item in Products %}
 <div id="product-{{ item.product.id }}">
     <div>
@@ -33,6 +44,14 @@
 {% endfor %}
 <br>
 <div class="">Total price:<div id="total_price" class="">{{ Total_price }}</div></div>
+{% if user.is_authenticated %}
+<div class='checkout-button' style="display: none;">
+    <button type="button" class="btn btn-primary" onclick="checkout()">Checkout</button>
+</div>
+{% else %}
+<span>Login to checkout</span>
+{% endif %}
+</div>
 <script>
 
     function change(obj){
@@ -99,5 +118,19 @@
             console.error('Error:', error);
         });
     }
+
+    function changeStore(obj) {
+        const parent = document.querySelector('.store-of-choise');
+        const button = document.querySelector('.checkout-button');
+        parent.textContent = obj.textContent;
+        button.style.display = '';
+    }
+
+    function checkout() {
+        const shop = document.querySelector('.store-of-choise');
+        const url = 'checkout/' + shop.textContent;
+        document.location.href = url
+    }
+
 </script>
 {% endblock %}

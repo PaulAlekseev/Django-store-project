@@ -29,9 +29,8 @@ class Basket:
         product_ids = self.basket.keys()
 
         if self.query is None:
-            products = self._get_queryset(product_ids)
-        else:
-            products = self.query
+            self._get_queryset(product_ids)
+        products = self.query
         basket = deepcopy(self.basket)
 
         for product in products:
@@ -45,6 +44,8 @@ class Basket:
                 self._save()
             item['total'] = item['amount'] * item['product'].price
             yield item
+        
+
 
     def clear(self):
         self.basket.clear()
@@ -71,4 +72,3 @@ class Basket:
         self.query = Product.objects.filter(id__in=product_ids).annotate(
             total_amount= Sum('storeproduct__amount')
         )
-        return self.query
