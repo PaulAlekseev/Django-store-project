@@ -9,7 +9,7 @@ def list_to_string(list):
 
 def string_to_JSON(string: str):
     result = {}
-    arr = [item.split('=')  for item in string.split('&')]
+    arr = [item.split('%')  for item in string.split('@')]
     for product in arr:
         result[product[0]] = product[1].split('~')
     return result

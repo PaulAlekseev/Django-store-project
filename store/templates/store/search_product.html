@@ -1,0 +1,48 @@
+{% extends 'general/base.html' %}
+
+{% block title %}Searching...{% endblock %}
+{% load poll_extras %}
+{% block content %}
+<div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+      <h1 class="display-4 fw-normal">Search</h1>
+</div>
+<div class="product_list row">
+  <div class="col-2">
+    <div class="filters">
+      {% for category in Categories %}
+      <a href="{{ category.get_absolute_url }}?search={{ search.0 }}">
+      {{ category }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+    <div class="products col">
+      {% for item in Products %}
+          <div class="card mb-4 rounded-3 shadow-sm">
+            <a href="{{ item.get_absolute_url }}">
+              <div class="card-header py-3">
+                  <h4 class="">{{ item.name }}{{ item.number_of_shops }}</h4>
+              </div>
+            </a>
+              <button onclick="clicked(this)" id="{{ item.id }}">Add to basket</button>
+          </div>
+      {% endfor %}
+    </div>
+
+</div>
+<div class="pagination">
+  <nav class="step-links">
+    <ul>
+      {% for page in paginator.page_range %}
+      <li class="page-num">
+        <a href="?{% fix_pagination page=page %}">{{ page }}</a>
+      </li>
+      {% endfor %}
+    </ul>      
+  </nav>
+</div>
+<script>
+  
+</script>
+
+{% endblock %}

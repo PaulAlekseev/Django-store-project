@@ -1,13 +1,11 @@
-from django.db.models import Count
-from django.http import JsonResponse
+from django import template
 from django.views import generic
-from django.urls import reverse
 
 from .models import Category, InnerCategory, Product
 from .custom.handlers.string_handlers import envelop, string_to_JSON
 from .custom.annotations import get_annotated_products
 
-import json
+register = template.Library()
 
 
 class IndexCategoryView(generic.list.ListView):
@@ -37,11 +35,17 @@ class ProductListView(generic.list.ListView):
     context_object_name = 'Products'
 
     def get_queryset(self):
-        filters = self.kwargs.get('filters')
+        request_filters = self.request.GET
+        print(request_filters)
+        filters = request_filters.get('filters')
+        search_for = request_filters.get('search')
         products = Product.products.filter(
             category__slug=self.kwargs['category_slug']
             ).order_by('name')
         data=None
+
+        if search_for:
+            products = products.filter(name__icontains=search_for)
 
         if filters:
             data = string_to_JSON(filters)
@@ -65,6 +69,7 @@ class ProductListView(generic.list.ListView):
             context['checkboxes'] = '~'.join([key+'-'+value for key, values in filters.items() for value in values])
         else:
             context['checkboxes'] = []
+        context['search'] = (self.request.GET.get('search') or '')
         return context
 
 
@@ -72,3 +77,24 @@ class ProductDetailView(generic.detail.DetailView):
     template_name = 'store/product_details.html'
     model = Product
     context_object_name = 'Product'
+
+
+class SearchListView(generic.list.ListView):
+    paginate_by = 5
+    template_name = 'store/search_product.html'
+    context_object_name = 'Products'
+
+    def get_queryset(self):
+        for key, item in self.request.GET.items():
+            print(key, item)
+        search_for = self.request.GET.get('search_form')
+        query = Product.products.filter(name__icontains=search_for).select_related(
+            'category'
+            ).order_by('-category')
+        return query
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['Categories'] = list(dict.fromkeys([category.category for category in context['Products']]))
+        context['search'] = self.request.GET.get('search_form'),
+        return context

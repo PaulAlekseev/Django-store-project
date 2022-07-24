@@ -26,8 +26,9 @@
         </div>
 
         <div class="col">
-            <form class="w-100 me-3" role="search">
-                  <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+            <form method="get" action="{% url 'store:search' %}">
+                    <input type="text" name="search_form" value="{{ search_form.initial.search_for }}">
+                    <button class="btn btn-color ms-1" type="submit">Search</button>
             </form>
         </div>
 

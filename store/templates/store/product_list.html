@@ -2,6 +2,8 @@
 
 {% block title %}{{ Category }}{% endblock %}
 
+{% load poll_extras %}
+
 {% block content %}
 <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
       <h1 class="display-4 fw-normal">{{ Category }}{{ Category.amount }}</h1>
@@ -9,6 +11,7 @@
 <div class="product_list row">
   <div class="col-2">
     <div class="filters">
+      <input class="search form-control me-2" type="search" placeholder="Search in {{ Category }}" value="{{ search }}" aria-label="Search">
       {% if not Category.features.fields.items %}
       <span>There is no filters</span>
       {% else %}
@@ -47,7 +50,7 @@
     <ul>
       {% for page in paginator.page_range %}
       <li class="page-num">
-        <a href="?page={{ page }}">{{ page }}</a>
+        <a href="?{% fix_pagination page=page %}">{{ page }}</a>
       </li>
       {% endfor %}
     </ul>      
@@ -85,7 +88,7 @@ window.onload = function() {
 
 
   function find_checked(obj) {
-    const checkboxes = document.querySelectorAll(".filter_checkbox");
+    const checkboxes = document.querySelectorAll('.filter_checkbox');
     var checkboxes_checked = {};
     checkboxes.forEach(element => {
       if (element.checked) {
@@ -102,13 +105,20 @@ window.onload = function() {
   
   function checkbox_clicked(obj) {
     const checkboxes = find_checked(obj);
+    const search = document.querySelector('.search');
     const filters = [];
-    for (const [key, value] of Object.entries(checkboxes)) {
-      filters.push(key + '=' + value.join("~"));
+    var full_filter = {};
+    if (Object.keys(checkboxes).length > 0) {
+      for (const [key, value] of Object.entries(checkboxes)) {
+        filters.push(key + '%' + value.join("~"));
+      }
+      full_filter['filters'] = filters.join('@');
     }
-    const filter_string = filters.join('&');
-    console.log(filter_string);
-    const url = '{% url "store:product_list" slug %}' + filter_string;
+    if (search.value != '') {
+      full_filter['search'] = search.value;
+    }
+    filter_string = new URLSearchParams(full_filter);
+    const url = '{% url "store:filtered_product_list" slug %}' + '?' + filter_string.toString();
     window.location.href = url;
   }
   
