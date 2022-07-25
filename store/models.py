@@ -114,16 +114,19 @@ class Product(models.Model):
             category_features = category.features
             requested_fields = category.features['requested_fields']
 
+            self.features = {key: str(item) for key, item in self.features.items()}
+
             for key, item in self.features.items():
+                string_item = str(item)
                 if key not in requested_fields:
                     continue
                 if key not in category_features['fields']:
-                    category_features['fields'][key] = [item]
+                    category_features['fields'][key] = [string_item]
                     category.save()
                     continue
-                if item in category_features['fields'][key]:
+                if string_item in category_features['fields'][key]:
                     continue
-                category_features['fields'][key].append(item)
+                category_features['fields'][key].append(string_item)
                 category.save()
     
         return super().save(force_insert, force_update, using, update_fields)

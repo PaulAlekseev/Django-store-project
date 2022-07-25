@@ -2,7 +2,8 @@ from django import template
 from django.views import generic
 
 from .models import Category, InnerCategory, Product
-from .custom.handlers.string_handlers import envelop, string_to_JSON
+from .custom.handlers.string_handlers import string_to_dictionary
+from .custom.handlers.product_former import product_former
 from .custom.annotations import get_annotated_products
 
 register = template.Library()
@@ -36,25 +37,11 @@ class ProductListView(generic.list.ListView):
 
     def get_queryset(self):
         request_filters = self.request.GET
-        filters = request_filters.get('filters')
-        search_for = request_filters.get('search')
         products = Product.products.filter(
             category__slug=self.kwargs['category_slug']
             ).order_by('name')
-        data=None
 
-        if search_for:
-            products = products.filter(name__icontains=search_for)
-
-        if filters:
-            data = string_to_JSON(filters)
-            extra_filter = " OR ".join([
-                f"store_product.features -> '{key}' IN {envelop(value[0]) if len(value) == 1 else tuple(value)}" for key, value in data.items()
-                ])
-            products = products.extra(
-                where=[extra_filter]
-                )
-        self.kwargs['filters'] = data
+        products = product_former.get_products(products, request_filters)
 
         queryset = get_annotated_products(products)
         return queryset
@@ -63,11 +50,11 @@ class ProductListView(generic.list.ListView):
         context = super().get_context_data(**kwargs)
         context['Category'] = InnerCategory.objects.get(slug=self.kwargs['category_slug'])
         context['slug'] = self.kwargs['category_slug']
-        filters = self.kwargs['filters']
-        if filters:
-            context['checkboxes'] = '~'.join([key+'-'+value for key, values in filters.items() for value in values])
-        else:
-            context['checkboxes'] = []
+        filters_string = self.request.GET.get('filters')
+        filters = (string_to_dictionary(filters_string) if filters_string else None)
+        context['checkboxes'] = (
+            '~'.join([key+'-'+value for key, values in filters.items() for value in values]) if filters else []
+            )
         context['search'] = (self.request.GET.get('search') or '')
         return context
 
