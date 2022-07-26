@@ -153,3 +153,6 @@ if DEBUG:
 
     mimetypes
     mimetypes.add_type("application/javascript", ".js", True)
+
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')

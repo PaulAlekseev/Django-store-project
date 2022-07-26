@@ -1,12 +1,11 @@
 from django import template
 from django.views import generic
+from django.shortcuts import get_list_or_404
 
 from .models import Category, InnerCategory, Product
 from .custom.handlers.string_handlers import string_to_dictionary
 from .custom.handlers.product_former import product_former
 from .custom.annotations import get_annotated_products
-
-register = template.Library()
 
 
 class IndexCategoryView(generic.list.ListView):

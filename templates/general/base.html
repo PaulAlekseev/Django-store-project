@@ -17,47 +17,49 @@
 </head>
 
 <body>
-<div class="container">
-    <header class="header row">
-        <div class='col-1'>
-            <a href="/">
-                <span class="fs-1">Store</span>
-            </a>
-        </div>
+<nav class="navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <header class="header row">
+            <div class='col-1'>
+                <a href="/">
+                    <span class="fs-1">Store</span>
+                </a>
+            </div>
 
-        <div class="col">
-            <form method="get" action="{% url 'store:search' %}">
-                    <input type="text" name="search_form" value="{{ search_form.initial.search_for }}">
-                    <button class="btn btn-color ms-1" type="submit">Search</button>
-            </form>
-        </div>
+            <div class="col">
+                <form method="get" action="{% url 'store:search' %}">
+                        <input type="text" name="search_form" value="{{ search_form.initial.search_for }}">
+                        <button class="btn btn-color ms-1" type="submit">Search</button>
+                </form>
+            </div>
 
-        <div class="col-2">
-            <a href="{% url 'basket:summary' %}">
-                Basket
-            </a>
+            <div class="col-2">
+                <a href="{% url 'basket:summary' %}">
+                    Basket
+                </a>
 
-            {% if user.is_authenticated %}
-            <a href="{% url 'authentication:profile' %}">
-                Profile
-            </a>
-            <a href="{% url 'authentication:logout' %}">
-                Logout
-            </a>
-            {% else %}
-            <a href="{% url 'authentication:login' %}">
-                Login
-            </a>
-            <a href="{% url 'authentication:registration' %}">
-                Registration
-            </a>
-            <a href="{% url 'authentication:password_reset' %}">
-                ResetPassword
-            </a>
-            {% endif %}
-        </div>
-    </header>
-</div>
+                {% if user.is_authenticated %}
+                <a href="{% url 'authentication:profile' %}">
+                    Profile
+                </a>
+                <a href="{% url 'authentication:logout' %}">
+                    Logout
+                </a>
+                {% else %}
+                <a href="{% url 'authentication:login' %}">
+                    Login
+                </a>
+                <a href="{% url 'authentication:registration' %}">
+                    Registration
+                </a>
+                <a href="{% url 'authentication:password_reset' %}">
+                    ResetPassword
+                </a>
+                {% endif %}
+            </div>
+        </header>
+    </div>
+</nav>
 <div class="container">
     {% block content %}
     {% endblock %}

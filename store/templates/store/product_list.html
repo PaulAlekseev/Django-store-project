@@ -8,40 +8,99 @@
 <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
       <h1 class="display-4 fw-normal">{{ Category }}{{ Category.amount }}</h1>
 </div>
+
 <div class="product_list row">
-  <div class="col-2">
-    <div class="filters">
-      <input class="search form-control me-2" type="search" placeholder="Search in {{ Category }}" value="{{ search }}" aria-label="Search">
+
+  <div class="filters col-3">
+    <div>
+      <input class="search form-control mb-3" type="search" placeholder="Search in {{ Category }}" value="{{ search }}" aria-label="Search">
+    </div>
+    <div class="container border rounded-3 p-2">
       {% if not Category.features.fields.items %}
-      <span>There is no filters</span>
+      <h4>There is no filters</h4>
       {% else %}
+      <h3 class="text-center">Filters:</h3>
+      <div class="row">
       {% for field, values in Category.features.fields.items %}
-      <span>{{ field }}</span>
-      <div class="row row-cols-auto" name="myfilters">
-        {% for value in values %}
-        <div class="col-6">
-          <input class="filter_checkbox" type="checkbox" id="{{ field }}" name="{{field}}-{{value}}" data-value="{{ value }}">
-          <label>{{ value }}</label>
+        <div class="col-12 text-center border-bottom">
+          <p>
+            <button class="filter-button btn" data-bs-toggle="collapse" href="#collapse{{ field }}">
+              <h5 class="text-center">{{ field }}</h5>
+            </button>
+          </p>
+          <div class="collapse" id="collapse{{ field }}">
+            <div class="list-group" name="myfilters">
+              {% for value in values %}
+                <label class="form-check-label list-group-item text-start">
+                  <input class="filter_checkbox" type="checkbox" id="{{ field }}" name="{{field}}-{{value}}" data-value="{{ value }}">
+                  {{ value }}
+                </label>
+              {% endfor %}
+            </div>
+          </div>
         </div>
-        {% endfor %}
-      </div>
       {% endfor %}
-      <button type="button" class="btn btn-primary btn-sm" onclick="checkbox_clicked(this)">Apply</button>
+      </div>
+      <div class="d-grid my-3">
+      <button type="button align-content-center" class="btn btn-primary btn-sm" onclick="checkbox_clicked(this)">Apply</button>
+      </div>
       {% endif %}
     </div>
   </div>
-        <div class="products col">
-      {% for item in Products %}
-          <div class="card mb-4 rounded-3 shadow-sm">
-            <a href="{{ item.get_absolute_url }}">
-              <div class="card-header py-3">
-                  <h4 class="">{{ item.name }}{{ item.number_of_shops }}</h4>
+
+  <div class="products col">
+    {% for item in Products %}
+      <div class="card mb-4 rounded-3 shadow-sm">
+        <div class="card-body row">
+          <div class="col-3">
+            <div class="product-image col-3">
+              <div class="m-2">
+                <img src="{{ item.image.url }}">
               </div>
-            </a>
-              <button onclick="clicked(this)" id="{{ item.id }}">Add to basket</button>
+            </div>
           </div>
-      {% endfor %}
+          <div class="col-6">
+              <!-- <div class="row"> -->
+                <a class="product-about text-decoration-none text-reset mx-auto align-self-start" href="{{ item.get_absolute_url }}">
+                  <div class="d-flex flex-column">
+                    <span class="product-name-link text-start fs-4 col-12">{{ item.name }}</span>
+                  </div>
+                </a>
+                <div class="col-12">
+                  <div class="row">
+                    {% if item.number_of_shops > 0 %}
+                    <div class="available-stores col-6">
+                      <span class="stores-count fs-5">
+                        {% if item.number_of_shops == 1 %}
+                        Available: in {{ item.number_of_shops }} store
+                        {% else %}
+                        Available: in {{ item.number_of_shops }} stores
+                        {% endif %}
+                      </span>
+                    </div>
+                    <div class="total-amount col-6">
+                      <span class="amount-count fs-5">
+                        bruh
+                      </span>
+                    </div>
+                    {% else %}
+                    <div class="col-6">
+                      <span class="out-of-stock fs-5">
+                        OUT OF STOCK
+                      </span>
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+              <!-- </div> -->
+          </div>
+          <div class="product-buy col-3">
+            <button onclick="clicked(this)" id="{{ item.id }}">Add to basket</button>
+          </div>
         </div>
+      </div>
+    {% endfor %}
+  </div>
 
 </div>
 

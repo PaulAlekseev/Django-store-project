@@ -33,7 +33,7 @@ class PriceAdmin(admin.ModelAdmin):
 
 class ProductAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None, {'fields': ['name', 'category', 'slug']}),
+        (None, {'fields': ['name', 'category', 'image', 'slug']}),
         ('Information', {'fields': ['description', 'guarantee', 'features', 'price']}),
         ('Status', {'fields': ['is_active']}),
     ]

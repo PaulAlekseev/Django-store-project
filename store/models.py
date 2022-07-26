@@ -11,12 +11,20 @@ class ProductManager(models.Manager):
 
 class Category(MPTTModel):
     name = models.CharField(max_length=100)
-    parent = TreeForeignKey('self',
-                            blank=True,
-                            null=True,
-                            on_delete=models.SET_NULL,
-                            related_name='Category',
-                            verbose_name='Categories')
+    parent = TreeForeignKey(
+        'self',
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='Category',
+        verbose_name='Categories'
+    )
+    image = models.ImageField(
+        upload_to='images/categories',
+        null=False,
+        blank=False,
+        default='images/categories/default.png',
+    )
     slug = models.SlugField(unique=True)
 
     class Meta:
@@ -31,11 +39,22 @@ class Category(MPTTModel):
 
 class InnerCategory(models.Model):
     name = models.CharField(max_length=100)
-    category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
+    category = models.ForeignKey(
+        Category,
+        null=True,
+        on_delete=models.SET_NULL
+    )
+    image = models.ImageField(
+        upload_to='images/categories',
+        null=False,
+        blank=False,
+        default='images/categories/default.png',
+    )
     slug = models.SlugField(unique=True)
-    features = models.JSONField(null=True,
-                                blank=True,
-                                help_text='features used for filter purpose'
+    features = models.JSONField(
+        null=True,
+        blank=True,
+        help_text='features used for filter purpose'
     )
 
     class Meta:
@@ -84,11 +103,19 @@ class Product(models.Model):
     name = models.CharField(max_length=70)
     category = models.ForeignKey(InnerCategory, null=True, on_delete=models.SET_NULL)
     slug = models.SlugField(unique=True)
+    image = models.ImageField(
+        upload_to='images/products',
+        null=False,
+        blank=False,
+        default='images/products/default.png',
+    )
     description = models.TextField(max_length=300)
     guarantee = models.IntegerField()
-    features = models.JSONField(null=True,
-                                blank=True,
-                                help_text='Additional information for different Categories')
+    features = models.JSONField(
+        null=True,
+        blank=True,
+        help_text='Additional information for different Categories'
+    )
     price = models.IntegerField(null=False, blank=False, help_text='Current price for this item')
     is_active = models.BooleanField(default=False)
     availability = models.ManyToManyField(Store, through='StoreProduct')
