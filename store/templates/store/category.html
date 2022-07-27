@@ -8,10 +8,10 @@
 
 <div class="row row-cols-1 row-cols-md-3 row-cols-xl-4 text-center">
     {% for category in Categories %}
-    <div class="category col h-auto">
+    <div class="category col h-auto mb-3">
       <div class="card rounded-3 shadow-sm">
         <a class="text-decoration-none text-reset" href="{{ category.get_absolute_url }}">
-          <div class="card-body">
+          <div class="card-body p-auto">
             <div class="d-flex justify-content-center">
               <img class="d-none d-sm-block" src="{{ category.image.url }}">
             </div>

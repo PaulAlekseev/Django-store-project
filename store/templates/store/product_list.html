@@ -22,8 +22,9 @@
       <h3 class="text-center">Filters:</h3>
       <div class="row">
       {% for field, values in Category.features.fields.items %}
-        <div class="col-12 text-center border-bottom">
-          <p>
+        <div class="col-12 text-center">
+          <div class="border-bottom">
+          <p class="collapse-button">
             <button class="filter-button btn" data-bs-toggle="collapse" href="#collapse{{ field }}">
               <h5 class="text-center">{{ field }}</h5>
             </button>
@@ -38,11 +39,13 @@
               {% endfor %}
             </div>
           </div>
+          </div>
         </div>
       {% endfor %}
       </div>
       <div class="d-grid my-3">
-      <button type="button align-content-center" class="btn btn-primary btn-sm" onclick="checkbox_clicked(this)">Apply</button>
+        <button type="button align-content-center" class="btn btn-primary btn-sm mb-3 fs-6" onclick="checkbox_clicked(this)">Apply</button>
+        <a type="button align-content-center" class="btn btn-outline-primary fs-6" href="{{ Category.get_absolute_url }}">Reset filters</a>
       </div>
       {% endif %}
     </div>
@@ -60,42 +63,52 @@
             </div>
           </div>
           <div class="col-6">
-              <!-- <div class="row"> -->
-                <a class="product-about text-decoration-none text-reset mx-auto align-self-start" href="{{ item.get_absolute_url }}">
-                  <div class="d-flex flex-column">
-                    <span class="product-name-link text-start fs-4 col-12">{{ item.name }}</span>
-                  </div>
-                </a>
-                <div class="col-12">
-                  <div class="row">
-                    {% if item.number_of_shops > 0 %}
-                    <div class="available-stores col-6">
-                      <span class="stores-count fs-5">
-                        {% if item.number_of_shops == 1 %}
-                        Available: in {{ item.number_of_shops }} store
-                        {% else %}
-                        Available: in {{ item.number_of_shops }} stores
-                        {% endif %}
-                      </span>
-                    </div>
-                    <div class="total-amount col-6">
-                      <span class="amount-count fs-5">
-                        bruh
-                      </span>
-                    </div>
+            <div class="product-name">
+              <a class="product-about text-decoration-none text-reset mx-auto align-self-start" href="{{ item.get_absolute_url }}">
+                <span class="product-name-link text-start fs-4 ">{{ item.name }}</span>
+              </a>
+            </div>
+            <div class="col-12">
+              <div class="row text-start">
+                {% if item.number_of_shops > 0 %}
+                <div class="available-stores col-6">
+                  <span class="stores-count fs-6">
+                    {% if item.number_of_shops == 1 %}
+                    Available: in {{ item.number_of_shops }} store
                     {% else %}
-                    <div class="col-6">
-                      <span class="out-of-stock fs-5">
-                        OUT OF STOCK
-                      </span>
-                    </div>
+                    Available: in {{ item.number_of_shops }} stores
                     {% endif %}
-                  </div>
+                  </span>
                 </div>
-              <!-- </div> -->
+                <div class="total-amount col-6">
+                  <span class="amount-count fs-6">
+                    {% if item.total_amount > 0 %}
+                    Total {{ item.total_amount }} items available
+                    {% endif %}
+                  </span>
+                </div>
+                {% else %}
+                <div class="col-6">
+                  <span class="out-of-stock fs-5">
+                    OUT OF STOCK
+                  </span>
+                </div>
+                {% endif %}
+              </div>
+            </div>
           </div>
           <div class="product-buy col-3">
-            <button onclick="clicked(this)" id="{{ item.id }}">Add to basket</button>
+            <div class="row">
+              <div class="col-12 text-end mb-4">
+                <span class="fs-2 fw-bold">
+                  {{ item.price }} ₽
+                </span>
+              </div>
+              <div class="col-12">
+                <button type="button" class="btn btn-outline-primary" onclick="clicked(this)" id="{{ item.id }}">Favorite</button>
+                <button type="button" class="btn btn-outline-primary" onclick="clicked(this)" id="{{ item.id }}">Add to basket</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -104,17 +117,41 @@
 
 </div>
 
-<div class="pagination">
-  <nav class="step-links">
-    <ul>
-      {% for page in paginator.page_range %}
-      <li class="page-num">
-        <a href="?{% fix_pagination page=page %}">{{ page }}</a>
-      </li>
-      {% endfor %}
-    </ul>      
-  </nav>
-</div>
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+    <li class="page-item">
+      {% with page=page_obj.previous_page_number %}
+      <a class="page-link" href="?{% fix_pagination page=bruh %}">
+      {% endwith %}
+    {% else %}
+    <li class="page-item disabled">
+      <a class="page-link" href="#">
+    {% endif %}
+        Previous
+      </a>
+    </li>
+
+    {% for page in paginator.page_range %}
+    <li class="page-item"><a class="page-link" href="?{% fix_pagination page=page %}">{{ page }}</a></li>
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <li class="page-item">
+      {% with page=page_obj.next_page_number %}
+      <a class="page-link" href="?{% fix_pagination page=page %}">
+      {% endwith %}
+    {% else %}
+    <li class="page-item disabled">
+      <a class="page-link" href="#">
+    {% endif %}
+        Previous
+      </a>
+    </li>
+   
+  </ul>
+</nav>
+
 <script>
   
 window.onload = function() {

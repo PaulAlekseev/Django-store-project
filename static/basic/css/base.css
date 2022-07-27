@@ -1,6 +1,5 @@
 *{
     box-sizing: border-box;
-    text-decoration: none;
 }
 
 body {
@@ -12,9 +11,22 @@ body {
 }
 
 .category-text {
-    min-height: 100px;
+    min-height: 75px;
 }
 
 .filter-button {
 	box-shadow: none !important
+}
+
+.product-name {
+    height: 85%;
+}
+
+.navbar-base {
+    height: 55px;
+    align-content: center;
+}
+
+.reviews {
+    min-height: 200px;
 }

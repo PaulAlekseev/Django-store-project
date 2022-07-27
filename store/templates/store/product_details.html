@@ -5,7 +5,139 @@
 
 {% block content %}
 
-{{ Product.name }}
-{{ Product.features.fields.some_field}}
+<div class="product-detail row">
+
+    <div class="product-detail-name col-12 my-3">
+        <h3>
+            {{ Product.name }}
+        </h3>
+    </div>
+
+
+    <div class="product-detail-header col-12 my-3 border rounded-3 p-3">
+        <div class="row align-content-center">
+
+            <div class="col-6 align-content-center">
+                <img src="{{ Product.image.url }}">
+            </div>
+
+            <div class="col-6 align-content-center">
+                <div class="row">
+
+                    <div class="col-12 my-3">
+                        <span class="text-start fs-3">
+                        {% for value in Product.features.values %}
+                        {{ value }}, 
+                        {% endfor %}
+                        </span>
+                    </div>
+
+                    <div class="col-12 my-3">
+                        <div class="row text-start">
+                            {% if Product.number_of_shops > 0 %}
+                            <div class="available-stores col-6">
+                            <span class="stores-count fs-6">
+                                {% if Product.number_of_shops == 1 %}
+                                Available: in {{ Product.number_of_shops }} store
+                                {% else %}
+                                Available: in {{ Product.number_of_shops }} stores
+                                {% endif %}
+                            </span>
+                            </div>
+                            <div class="total-amount col-6">
+                            <span class="amount-count fs-6">
+                                {% if Product.total_amount > 0 %}
+                                Total {{ Product.total_amount }} items available
+                                {% endif %}
+                            </span>
+                            </div>
+                            {% else %}
+                            <div class="col-6">
+                            <span class="out-of-stock fs-5">
+                                OUT OF STOCK
+                            </span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="row my-3">
+                            <div class="col-12 text-start mb-4 border rounded-3">
+                                <span class="fs-2 fw-bold">
+                                {{ Product.price }} ₽
+                                </span>
+                            </div>
+                            <div class="col-12">
+                                <button type="button" class="btn btn-outline-primary" onclick="" id="{{ item.id }}">Favorite</button>
+                                <button type="button" class="btn btn-outline-primary" onclick="clicked(this)" id="{{ item.id }}">Add to basket</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="col border rounded-3 p-3">
+        <div class="row">
+            {% if Product.features|length == 0 %}
+                <span class="text-center fs-4 col-12">
+                    This item has no features
+                </span>
+            {% else %}
+                <span class="text-center fs-3 p-3 col-12">Product features</span>
+            {% for key, item in Product.features.items %}
+                <div class="col-12">
+                    <div class="row row-cols-2 m-2">
+                        <div class="border-bottom col-6">
+                            <span class="text-start fs-4 p3">
+                                {{ key }}
+                            </span>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-start fs-4 p-3">
+                                {{ item }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+        </span>
+    </div>
+
+    <div class="col-8 border rounded-3 ms-3">
+        <div class="row p-3">
+
+            <div class="col-12">
+                <span class="text-start fs-4 fw-bold">
+                    Customer reviews for {{ Product.name }}
+                </span>
+            </div>
+
+            <div class="col-12">
+                <a type="button" class="btn btn-outline-primary my-3" href="{% url 'authentication:create_review' slug=Product.slug %}">Add review</a>
+            </div>
+
+            <div class="reviews col-12 rounded-3 border">
+                {% for review in Reviews %}
+
+                <div class="card">
+
+                </div>
+                
+                {% endfor %}
+            </div>
+                
+        </div>
+    </div>
+
+
+</div>
 
 {% endblock %}

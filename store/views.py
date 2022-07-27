@@ -30,7 +30,7 @@ class CategoryListView(generic.list.ListView):
 
 
 class ProductListView(generic.list.ListView):
-    paginate_by = 5
+    paginate_by = 2
     template_name = 'store/product_list.html'
     context_object_name = 'Products'
 
@@ -62,6 +62,10 @@ class ProductDetailView(generic.detail.DetailView):
     template_name = 'store/product_details.html'
     model = Product
     context_object_name = 'Product'
+
+    def get_object(self):
+        obj = get_annotated_products(Product.objects.filter(slug=self.kwargs['slug']))[0]
+        return obj        
 
 
 class SearchListView(generic.list.ListView):

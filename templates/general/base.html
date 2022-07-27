@@ -3,6 +3,7 @@
 
 <head>
     {% load static %}
+    {% load crispy_forms_tags %}
     <meta charset="utf-8" />
     <title>{% block title %}Store{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,47 +14,41 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous">
     </script>
+    <script src="https://kit.fontawesome.com/53ad0cea42.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'basic/css/base.css' %}">
 </head>
 
 <body>
-<nav class="navbar-expand-lg navbar-light bg-light">
+<nav class="navbar-base navbar-expand-lg navbar-light bg-light">
     <div class="container">
-        <header class="header row">
-            <div class='col-1'>
-                <a href="/">
-                    <span class="fs-1">Store</span>
+        <header class="header row p-2 align-items-center">
+            <div class='col-2'>
+                <a class="text-decoration-none text-reset" href="/">
+                    <i class="fa-solid fa-lightbulb fa-xl"><span class="fs-5">Store</span></i>
                 </a>
             </div>
 
             <div class="col">
                 <form method="get" action="{% url 'store:search' %}">
-                        <input type="text" name="search_form" value="{{ search_form.initial.search_for }}">
-                        <button class="btn btn-color ms-1" type="submit">Search</button>
+                    {% crispy search_form %}
                 </form>
             </div>
 
             <div class="col-2">
-                <a href="{% url 'basket:summary' %}">
-                    Basket
+                <a class="text-decoration-none text-reset" href="{% url 'basket:summary' %}">
+                    <i class="fa-solid fa-basket-shopping fa-xl"></i>
                 </a>
 
                 {% if user.is_authenticated %}
-                <a href="{% url 'authentication:profile' %}">
-                    Profile
+                <a class="text-decoration-none text-reset p-3" href="{% url 'authentication:profile' %}">
+                    <i class="fa-solid fa-user fa-xl"></i>
                 </a>
-                <a href="{% url 'authentication:logout' %}">
-                    Logout
+                <a class="text-decoration-none text-reset" href="{% url 'authentication:logout' %}">
+                    <i class="fa-solid fa-arrow-right-from-bracket fa-xl"></i>
                 </a>
                 {% else %}
-                <a href="{% url 'authentication:login' %}">
-                    Login
-                </a>
-                <a href="{% url 'authentication:registration' %}">
-                    Registration
-                </a>
-                <a href="{% url 'authentication:password_reset' %}">
-                    ResetPassword
+                <a class="text-decoration-none text-reset p-3" href="{% url 'authentication:login' %}">
+                    <i class="fa-brands fa-osi fa-xl"></i>
                 </a>
                 {% endif %}
             </div>
