@@ -43,7 +43,7 @@ class BasketView(generic.list.ListView):
         data = json.loads(request.body)
         product_id = data['product_id']
         responce_data = {}
-        current_amount = basket.basket[str(product_id)]['amount']
+        current_amount = basket[str(product_id)]['amount']
         required_amount = int(data['product_amount'])
 
         product = Product.objects.filter(id=product_id).annotate(
@@ -72,7 +72,7 @@ class BasketView(generic.list.ListView):
         response_data = {}
         product_id = data['product_id']
         total_price = data['total_price']
-        current_amount = basket.basket[str(product_id)]['amount']
+        current_amount = basket[str(product_id)]['amount']
         
         product = Product.objects.get(id=product_id)
 
@@ -110,7 +110,7 @@ class CheckoutRedirectView(LoginRequiredMixin, generic.base.RedirectView):
 
         for store in preferable_stores:
             product_id = store.product.id
-            amount_needed = basket.basket[str(product_id)]['amount']
+            amount_needed = basket[str(product_id)]['amount']
             difference = 0
             store.amount -= amount_needed
             if store.amount < 0:
@@ -130,7 +130,7 @@ class CheckoutRedirectView(LoginRequiredMixin, generic.base.RedirectView):
         
         for id in product_ids:
             if id not in result:
-                result.update({str(id): basket.basket[str(id)]['amount']})
+                result.update({str(id): basket[str(id)]['amount']})
 
         remaining_stores = stores.filter(product__in=result.keys()).exclude(
             id__in=preferable_stores
@@ -166,5 +166,7 @@ class CheckoutRedirectView(LoginRequiredMixin, generic.base.RedirectView):
                 amount=item['amount']
             )
             order_product.save()
+
+        basket.clear()
 
         return super().get(request, *args, **kwargs)

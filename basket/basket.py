@@ -14,24 +14,24 @@ class Basket:
         basket = self.session.get('basket')
         if 'basket' not in request.session:
             basket = self.session['basket'] = {}
-        self.basket = basket
+        self._basket = basket
 
     def add(self, product_id):
         product_id = str(product_id)
 
-        if product_id in self.basket:
-            self.basket[product_id]['amount'] += 1
+        if product_id in self._basket:
+            self._basket[product_id]['amount'] += 1
         else:
-            self.basket[product_id] = {'amount': 1}
+            self._basket[product_id] = {'amount': 1}
         self._save()
 
     def __iter__(self):
-        product_ids = self.basket.keys()
+        product_ids = self._basket.keys()
 
         if self.query is None:
             self._new_queryset(product_ids)
         products = self.query
-        basket = deepcopy(self.basket)
+        basket = deepcopy(self._basket)
 
         for product in products:
             basket[str(product.id)]['product'] = product
@@ -40,28 +40,29 @@ class Basket:
         for item in basket.values():
             if item['amount'] > item['total_amount']:
                 item['amount'] = item['total_amount']
-                self.basket[str(item['product'].id)]['amount'] = item['total_amount']
+                self._basket[str(item['product'].id)]['amount'] = item['total_amount']
                 self._save()
             item['total'] = item['amount'] * item['product'].price
             yield item
         
-
+    def __getitem__(self, key):
+        return self._basket[key]
 
     def clear(self):
-        self.basket.clear()
+        self._basket.clear()
 
         self._save()
 
     def update_item(self, product_id, required_amount):
         if required_amount < 0:
-            self.basket[str(product_id)]['amount'] = 0
+            self._basket[str(product_id)]['amount'] = 0
         else:
-            self.basket[str(product_id)]['amount'] = required_amount
+            self._basket[str(product_id)]['amount'] = required_amount
             
         self._save()
 
     def delete_product(self, product_id):
-        del self.basket[str(product_id)]
+        del self._basket[str(product_id)]
 
         self._save()
 
