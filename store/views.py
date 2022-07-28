@@ -1,11 +1,11 @@
 from django.views import generic
-from django.db.models import Q, Count
 
 from .models import Category, InnerCategory, Product
 from .custom.handlers.string_handlers import string_to_dictionary
 from .custom.handlers.product_former import product_former
 from .custom.annotations import get_annotated_products
 from authentication.models import Review
+from .custom.constants import PRODUCTS_PER_PAGE
 
 
 class IndexCategoryView(generic.list.ListView):
@@ -30,7 +30,7 @@ class CategoryListView(generic.list.ListView):
 
 
 class ProductListView(generic.list.ListView):
-    paginate_by = 2
+    paginate_by = PRODUCTS_PER_PAGE
     template_name = 'store/product_list.html'
     context_object_name = 'Products'
 
@@ -81,15 +81,15 @@ class ProductDetailView(generic.detail.DetailView):
 
 
 class SearchListView(generic.list.ListView):
-    paginate_by = 5
+    paginate_by = PRODUCTS_PER_PAGE
     template_name = 'store/search_product.html'
     context_object_name = 'Products'
 
     def get_queryset(self):
         search_for = self.request.GET.get('search_form')
-        query = Product.products.filter(name__icontains=search_for).select_related(
+        query = get_annotated_products(Product.products.filter(name__icontains=search_for).select_related(
             'category'
-            ).order_by('-category')
+            ).order_by('-category'))
         return query
 
     def get_context_data(self, **kwargs):

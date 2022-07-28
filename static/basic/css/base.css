@@ -30,3 +30,8 @@ body {
 .reviews {
     min-height: 200px;
 }
+
+.delete-review-form {
+    margin-top: 200px;
+    margin-bottom: 300px;
+}

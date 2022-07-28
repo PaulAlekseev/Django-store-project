@@ -32,7 +32,7 @@
             <div class="col-12 mt-3">
                 <div class="row text-start">
                     {% if item.number_of_shops > 0 %}
-                    <div class="available-stores col-6">
+                    <div class="available-stores col-12">
                         <span class="stores-count fs-6">
                         {% if item.number_of_shops == 1 %}
                         Available: in {{ item.number_of_shops }} store
@@ -40,13 +40,6 @@
                         Available: in {{ item.number_of_shops }} stores
                         {% endif %}
                         </span>
-                </div>
-                <div class="total-amount col-6">
-                    <span class="amount-count fs-6">
-                    {% if item.total_amount > 0 %}
-                    Total {{ item.total_amount }} items available
-                    {% endif %}
-                    </span>
                 </div>
                 {% else %}
                 <div class="col-6">
