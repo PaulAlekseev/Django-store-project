@@ -1,0 +1,63 @@
+
+
+<div class="card mb-4 rounded-3 shadow-sm">
+    <div class="card-body row">
+        <div class="col-3">
+            <div class="product-image col-3">
+                <div class="m-2">
+                    <img src="{{ item.product.image.url }}">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6">
+
+            <div class="product-name">
+                <a class="product-about text-decoration-none text-reset mx-auto align-self-start" href="{{ item.product.get_absolute_url }}">
+                    <span class="product-name-link text-start fs-4 ">{{ item.product.name }}</span>
+                </a>
+            </div>
+
+        </div>
+        <div class="product-buy col-3">
+            <div class="row">
+
+                <div class="col-12 text-end mb-3">
+                    <span class="fs-2 fw-bold">
+                        {{ item.product.price }} ₽
+                    </span>
+                </div>
+
+                <div class="col-12 text-end">
+                    <span class="fs-2 fw-bold">
+                        X
+                    </span>
+                </div>
+                <div class="col-12 text-end mt-3">
+                {% if item.total_amount == 0 %}
+                    <div>
+                        <div>Out of stock</div>
+                    </div>
+                {% else %}
+                    <div>
+                        <input type="number" id="value-{{ item.product.id }}" value="{{ item.amount }}" data-id="{{ item.product.id }}" onchange="change(this)">
+                    </div>
+                {% endif %}
+                </div>
+
+                <div class="col-12 text-end mt-3">
+                    <div id="product-{{ item.product.id }}-price_total">
+                        <span class="fs-2 fw-bold">
+                        total = <span id="price-{{ item.product.id }}">{{ item.total }}</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-12 text-start">
+            <button type="button" class="btn btn btn-danger" onclick="delete_object(this)" id="{{ item.product.id }}">Delete item</button>
+        </div>
+    </div>
+</div>

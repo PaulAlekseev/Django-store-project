@@ -5,53 +5,56 @@
 {% block content %}
 
 <div>
-    <button class="store-of-choise btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-        Choose store
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-        {% for store in Stores %}
-        <li><span class="dropdown-item" onclick="changeStore(this)">{{ store.name }}</span></li>
-        {% endfor %}
-    </ul>
+    
 </div>
-<div class="products_basket">
-{% for item in Products %}
-<div id="product-{{ item.product.id }}">
-    <div>
-        name = {{ item.product.name }}<br>
-    </div>
-    <div id="product-{{ item.product.id }}-price">
-        price = {{ item.product.price }}<br>
-    </div>
-    <div id="product-{{ item.product.id }}-price_total">
-        total = <span id="price-{{ item.product.id }}">{{ item.total }}</span><br>
-    </div>
-    {% if item.total_amount == 0 %}
-    <div>
-        <div>Out of stock</div>
-    </div>
-    {% else %}
-    <div>
-        <input type="number" id="value-{{ item.product.id }}" value="{{ item.amount }}" data-id="{{ item.product.id }}" onchange="change(this)">
-    </div>
-    {% endif %}
-    <br>
-    <button onclick="delete_object(this)" data-id="{{ item.product.id }}">Delete</button>
 
-<br>
-<br>
+
 </div>
-{% endfor %}
-<br>
-<div class="">Total price:<div id="total_price" class="">{{ Total_price }}</div></div>
-{% if user.is_authenticated %}
-<div class='checkout-button' style="display: none;">
-    <button type="button" class="btn btn-primary" onclick="checkout()">Checkout</button>
-</div>
-{% else %}
-<span>Login to checkout</span>
-{% endif %}
-</div>
+
+    <div class="container" style="max-width: 1000px">
+        <div class="row">
+
+            <div class="col-12 text-start my-3">
+                <span class=" fs-1 fw-bold">
+                    Your basket
+                </span>
+            </div>
+            
+            {% for item in Products %}
+            <div class="col-12">
+                {% include 'basket/product_card_basket.html' %}
+            </div>
+            {% endfor %}
+            <div class="col-6 text-start">
+                <div class="row">
+                    <div class="col-12">
+                        <button class="store-of-choise btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            Choose store
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            {% for store in Stores %}
+                            <li><span class="dropdown-item" onclick="changeStore(this)">{{ store.name }}</span></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="col-12 mt-3">
+                        {% if user.is_authenticated %}
+                        <div class='checkout-button' style="display: none;">
+                            <button type="button" class="btn btn-primary" onclick="checkout()">Checkout</button>
+                        </div>
+                        {% else %}
+                        <span>Login to checkout</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 text-end">
+                <span class="fs-1 fw-bold">Total price:<div id="total_price">{{ Total_price }}</div></span>
+            </div>
+        </div>
+    </div>
 <script>
 
     function change(obj){
@@ -105,13 +108,13 @@
                     'X-CSRFToken':"{{csrf_token}}",
                 }, 
                 body:JSON.stringify({
-                    'product_id':obj.dataset.id,
+                    'product_id':obj.id,
                     'total_price':total.innerHTML,
                 })
             })
             .then(response => response.json())
         .then(data => {
-            obj.parentNode.remove();
+            obj.parentNode.parentNode.parentNode.parentNode.remove();
             total.textContent = data['total']
         })
         .catch((error) => {
