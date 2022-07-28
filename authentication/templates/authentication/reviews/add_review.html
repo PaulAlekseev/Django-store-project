@@ -1,0 +1,39 @@
+{% extends 'general/base.html' %}
+
+{% block title %}Review for {{ Product.name }}{% endblock %}
+
+
+{% block content %}
+<div class="row m-3">
+
+    <div class="col-2">
+
+    </div>
+
+    <div class="col-8 border rounded-3">
+        <span class="text-start fs-5">
+            Leave your feedback about {{ review.product.name }}
+        </span>
+        {% load crispy_forms_tags %}
+        <form class="p-3" method="post" action="{% url 'authentication:create_review' product.slug %}">
+    
+            {% csrf_token %}
+            <div class="m-3">
+            {{ form.review_pros|as_crispy_field }}
+            </div>
+            <div class="m-3">
+            {{ form.review_cons|as_crispy_field }}
+            </div>
+            <div class="m-3">
+            {{ form.review_commentary|as_crispy_field }}
+            </div>
+            <div class="m-3">
+            {{ form.rating|as_crispy_field }}
+            </div>
+    
+            <button class="btn btn-primary" name="submit">Add review</button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

@@ -97,7 +97,7 @@ class CustomPassworwResetCompleteView(PasswordResetCompleteView):
 class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
     model = Review
     fields = ['review_pros', 'review_cons', 'review_commentary', 'rating']
-    template_name = 'authentication/reviews/new_review.html'
+    template_name = 'authentication/reviews/add_review.html'
 
     def get(self, request, *args, **kwargs):
         product = get_object_or_404(Product, slug=self.kwargs['slug'])
@@ -126,4 +126,35 @@ class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
 
     def get_success_url(self):
         product = get_object_or_404(Product, slug=self.kwargs.get('slug'))
+        return product.get_absolute_url()
+
+
+class UpdateReviewView(generic.edit.UpdateView):
+    fields = ['review_pros', 'review_cons', 'review_commentary', 'rating']
+    template_name = 'authentication/reviews/update_review.html'
+
+    def get_object(self, queryset=None):
+        review = get_object_or_404(Review.objects.filter(
+            id=self.kwargs.get('id'), user=self.request.user
+            ).select_related('product')
+        )
+        return review
+
+    def get_success_url(self):
+        product = self.get_object().product
+        return product.get_absolute_url()
+
+
+class DeleteReviewView(generic.edit.DeleteView):
+    template_name = 'authentication/reviews/delete_review.html'
+
+    def get_object(self):
+        review = get_object_or_404(Review.objects.filter(
+            id=self.kwargs.get('id'), user=self.request.user
+            ).select_related('product')
+        )
+        return review
+
+    def get_success_url(self):
+        product = self.get_object().product
         return product.get_absolute_url()

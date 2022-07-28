@@ -15,4 +15,6 @@ urlpatterns = [
     path('password_reset_confirm/<slug:uidb64>/<slug:token>', views.CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('password_reset_complete', views.CustomPassworwResetCompleteView.as_view(), name='password_reset_complete'),
     path('reviews/add/<slug:slug>', views.ReviewCreateView.as_view(), name='create_review'),
+    path('reviews/update/<int:id>', views.UpdateReviewView.as_view(), name='update_review'),
+    path('reviews/delete/<int:id>', views.DeleteReviewView.as_view(), name='delete_review'),
 ]
