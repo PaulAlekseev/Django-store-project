@@ -1,0 +1,76 @@
+
+<div class="card my-3">
+    <div class="card-body">
+        <div class="row">
+            
+            <div class="col-12 p-2 rounded-3">
+                <div class="row align-items-center">
+
+                    <div class="col-6">
+                        <span class="text-start fs-3">
+                            {{ review.user }}
+                        </span>
+                    </div>
+
+                    <div class="col-6 text-end">
+                        <span class="fs-6">
+                            {{ review.pub_date }}
+                        </span>
+                    </div>
+                    
+                    <div class="col-12 text-start">
+                        <span class="fs-5">
+                            Rating: 
+                        </span>
+                            <i class="fa-solid fa-star">{{ review.rating }}</i>
+                    </div>
+
+                    {% if review.review_pros %}
+                    <div class="col-12 mt-3">
+                        <div class="row">
+                        <span class="col-12 fs-5">
+                            Pros:
+                        </span>
+                        <span class="col-12 fs-6">
+                            {{ review.review_pros}}                                  
+                        </span>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if review.review_cons %}
+                    <div class="col-12 mt-3">
+                        <div class="row">
+                        <span class="col-12 fs-5">
+                            Cons:
+                        </span>
+                        <span class="col-12 fs-6">
+                            {{ review.review_cons }}                                  
+                        </span>
+                        </div>
+                    </div>
+                    {% endif %}
+
+
+                    {% if review.review_commentary %}
+                    <div class="col-12 mt-3">
+                        <div class="row">
+                        <span class="col-12 fs-5">
+                            Commentary:
+                        </span>
+                        <span class="col-12 fs-6">
+                            {{ review.review_commentary}}                                  
+                        </span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if review.user == user %}
+                    
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

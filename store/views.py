@@ -66,8 +66,6 @@ class ProductDetailView(generic.detail.DetailView):
     def get_object(self):
         obj = get_annotated_products(
             Product.objects.filter(slug=self.kwargs['slug'])
-        ).annotate(
-            number_of_shops=Count('storeproduct', filter=Q(storeproduct__amount__gt=0))
         )[0]
         
         return obj

@@ -63,6 +63,11 @@
 
                     <div class="col-12">
                         <div class="row my-3">
+                            <div class="col-12 text-start">
+                                <span>
+                                    <i class="fa-solid fa-star">{{ Product.avg_rating|floatformat:1 }}</i>
+                                </span>
+                            </div>
                             <div class="col-12 text-start mb-4 border rounded-3">
                                 <span class="fs-2 fw-bold">
                                 {{ Product.price }} ₽
@@ -120,84 +125,22 @@
             </div>
 
             <div class="col-12">
-                <a type="button" class="btn btn-outline-primary my-3" href="{% url 'authentication:create_review' slug=Product.slug %}">Add review</a>
+                {% if user.is_authenticated %}
+                    <a type="button" class="btn btn-outline-primary my-3" href="{% url 'authentication:create_review' slug=Product.slug %}">Add review</a>
+                {% else %}
+                    <div class="mt-3">
+                        <span class="fs-5">
+                            <a href="{% url 'authentication:login' %}">Login</a> to add review
+                        </span>
+                    </div>
+                {% endif %}
             </div>
+
 
             <div class="reviews col-12">
                 {% for review in Reviews %}
 
-                <div class="card my-3">
-                    <div class="card-body">
-                        <div class="row">
-                            
-                            <div class="col-12 p-2 rounded-3">
-                                <div class="row align-items-center">
-
-                                    <div class="col-6">
-                                        <span class="text-start fs-3">
-                                            {{ review.user }}
-                                        </span>
-                                    </div>
-
-                                    <div class="col-6 text-end">
-                                        <span class="fs-6">
-                                            {{ review.pub_date }}
-                                        </span>
-                                    </div>
-                                    
-                                    <div class="col-12 text-start">
-                                        <span class="fs-5">
-                                            Rating: 
-                                        </span>
-                                            <i class="fa-solid fa-star">{{ review.rating }}</i>
-                                    </div>
-
-                                    {% if review.review_pros %}
-                                    <div class="col-12 mt-3">
-                                        <div class="row">
-                                        <span class="col-12 fs-5">
-                                            Pros:
-                                        </span>
-                                        <span class="col-12 fs-6">
-                                            {{ review.review_pros}}                                  
-                                        </span>
-                                        </div>
-                                    </div>
-                                    {% endif %}
-
-                                    {% if review.review_cons %}
-                                    <div class="col-12 mt-3">
-                                        <div class="row">
-                                        <span class="col-12 fs-5">
-                                            Cons:
-                                        </span>
-                                        <span class="col-12 fs-6">
-                                            {{ review.review_cons }}                                  
-                                        </span>
-                                        </div>
-                                    </div>
-                                    {% endif %}
-
-
-                                    {% if review.review_commentary %}
-                                    <div class="col-12 mt-3">
-                                        <div class="row">
-                                        <span class="col-12 fs-5">
-                                            Commentary:
-                                        </span>
-                                        <span class="col-12 fs-6">
-                                            {{ review.review_commentary}}                                  
-                                        </span>
-                                        </div>
-                                    </div>
-                                    {% endif %}
-
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
+                {% include 'authentication/reviews/review_card.html' %}
                 
                 {% endfor %}
             </div>
