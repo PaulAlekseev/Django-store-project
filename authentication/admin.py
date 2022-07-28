@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, Order, OrderProduct, OrderStore
+from .models import CustomUser, Order, OrderProduct, OrderStore, Review
 
 
 class OrderProductAdmin(admin.ModelAdmin):
@@ -18,3 +18,4 @@ admin.site.register(CustomUser, UserAdmin)
 admin.site.register(Order)
 admin.site.register(OrderProduct, OrderProductAdmin)
 admin.site.register(OrderStore, OrderStoreAdmin)
+admin.site.register(Review)

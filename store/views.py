@@ -1,11 +1,11 @@
-from django import template
 from django.views import generic
-from django.shortcuts import get_list_or_404
+from django.db.models import Q, Count
 
 from .models import Category, InnerCategory, Product
 from .custom.handlers.string_handlers import string_to_dictionary
 from .custom.handlers.product_former import product_former
 from .custom.annotations import get_annotated_products
+from authentication.models import Review
 
 
 class IndexCategoryView(generic.list.ListView):
@@ -64,8 +64,22 @@ class ProductDetailView(generic.detail.DetailView):
     context_object_name = 'Product'
 
     def get_object(self):
-        obj = get_annotated_products(Product.objects.filter(slug=self.kwargs['slug']))[0]
-        return obj        
+        obj = get_annotated_products(
+            Product.objects.filter(slug=self.kwargs['slug'])
+        ).annotate(
+            number_of_shops=Count('storeproduct', filter=Q(storeproduct__amount__gt=0))
+        )[0]
+        
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['Reviews'] = Review.objects.filter(
+            product__slug=self.kwargs['slug']
+        ).select_related(
+            'user'
+        )
+        return context
 
 
 class SearchListView(generic.list.ListView):

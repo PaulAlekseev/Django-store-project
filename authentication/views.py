@@ -4,17 +4,17 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import login
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.shortcuts import resolve_url, redirect
+from django.shortcuts import get_object_or_404, resolve_url, redirect
 from django.http import HttpResponse
 from django.views import generic
 
 from .tokens import account_activation_token
 from .forms import RegistrationForm
-from store.models import Category
-from .models import CustomUser
+from store.models import Category, Product
+from .models import CustomUser, Review
 
 
 class CustomLoginView(LoginView):
@@ -92,3 +92,38 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
 class CustomPassworwResetCompleteView(PasswordResetCompleteView):
     template_name = 'authentication/password_reset_complete.html'
+
+
+class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
+    model = Review
+    fields = ['review_pros', 'review_cons', 'review_commentary', 'rating']
+    template_name = 'authentication/reviews/new_review.html'
+
+    def get(self, request, *args, **kwargs):
+        product = get_object_or_404(Product, slug=self.kwargs['slug'])
+        product_reviews = product.review_set.all()
+        users_already_reviewed = CustomUser.objects.filter(review__in=product_reviews)
+
+        if request.user in users_already_reviewed:
+            return redirect(product)
+
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = get_object_or_404(Product, slug=self.kwargs.get('slug'))
+        context.update({
+            'product': product,
+        })
+        return context
+
+    def form_valid(self, form):
+        review = form.save(commit=False)
+        product = get_object_or_404(Product, slug=self.kwargs.get('slug'))
+        review.product = product
+        review.user = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        product = get_object_or_404(Product, slug=self.kwargs.get('slug'))
+        return product.get_absolute_url()

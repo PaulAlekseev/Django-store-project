@@ -1,0 +1,20 @@
+{% extends 'general/base.html' %}
+
+{% block title %}Review for {{ Product.name }}{% endblock %}
+
+
+{% block content %}
+
+    {% load crispy_forms_tags %}
+    <form method="post" action="{% url 'authentication:create_review' product.slug %}">
+
+        {% csrf_token %}
+        {{ form.review_pros|as_crispy_field }}
+        {{ form.review_cons|as_crispy_field }}
+        {{ form.review_commentary|as_crispy_field }}
+        {{ form.rating|as_crispy_field }}
+
+        <button class="btn btn-primary" name="submit">Add review</button>
+    </form>
+
+{% endblock %}
