@@ -7,6 +7,7 @@ app_name = 'authentication'
 urlpatterns = [
     path('login', views.CustomLoginView.as_view(), name='login'),
     path('profile', views.UserProfileView.as_view(), name='profile'),
+    path('profile/reviews', views.UserReviewView.as_view(), name='reviews'),
     path('logout', views.CustomLogoutView.as_view(), name='logout'),
     path('registration', views.UserRegistrationFormView.as_view(), name='registration'),
     path('activation/<slug:uidb64>/<slug:token>', views.UserActivationView.as_view(), name='activation'),

@@ -1,3 +1,4 @@
+from urllib import request
 from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -13,8 +14,8 @@ from django.views import generic
 
 from .tokens import account_activation_token
 from .forms import RegistrationForm
-from store.models import Category, Product
-from .models import CustomUser, Review
+from store.models import Product
+from .models import CustomUser, Review, OrderProduct
 
 
 class CustomLoginView(LoginView):
@@ -72,8 +73,37 @@ class UserActivationView(generic.base.View):
 
 class UserProfileView(generic.list.ListView, LoginRequiredMixin):
     template_name = 'authentication/user/profile.html'
-    model = Category
+    context_object_name = 'Orders'
 
+    def get_queryset(self):
+        intermediate_query = OrderProduct.objects.filter(
+            order__user=self.request.user
+        ).select_related(
+            'order'
+        ).select_related(
+            'product'
+        )
+
+        query = {}
+
+        for item in intermediate_query:
+            if item.order in query:
+                query[item.order].append(item)
+            else:
+                query[item.order] = [item]
+
+        return query
+
+
+class UserReviewView(generic.list.ListView, LoginRequiredMixin):
+    template_name = 'authentication/user/profile_review.html'
+    context_object_name = 'Reviews'
+
+    def get_queryset(self):
+        query = Review.objects.filter(user=self.request.user)
+        print(query)
+        
+        return query
 
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'authentication/user/password_reset_form.html'
@@ -129,7 +159,7 @@ class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
         return product.get_absolute_url()
 
 
-class UpdateReviewView(generic.edit.UpdateView):
+class UpdateReviewView(LoginRequiredMixin, generic.edit.UpdateView):
     fields = ['review_pros', 'review_cons', 'review_commentary', 'rating']
     template_name = 'authentication/reviews/update_review.html'
 
@@ -145,7 +175,7 @@ class UpdateReviewView(generic.edit.UpdateView):
         return product.get_absolute_url()
 
 
-class DeleteReviewView(generic.edit.DeleteView):
+class DeleteReviewView(LoginRequiredMixin, generic.edit.DeleteView):
     template_name = 'authentication/reviews/delete_review.html'
 
     def get_object(self):

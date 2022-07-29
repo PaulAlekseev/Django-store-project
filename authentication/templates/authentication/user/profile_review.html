@@ -23,23 +23,23 @@
 
             <ul class="list-group mb-3">
 
-                <li class="list-group-item active">
-                    Orders
-                </li>
-
-                <a href="{% url 'authentication:reviews' %}">
+                <a href="{% url 'authentication:profile' %}">
                     <li class="list-group-item">
-                        Commentaries
+                        Orders
                     </li>
                 </a>
+
+                <li class="list-group-item active">
+                    Commentaries
+                </li>
             </ul>
 
         </div>
 
         <div class="col-9">
-        {% for order, products in Orders.items %}
+        {% for review in Reviews %}
 
-        {% include 'authentication/user/order_card.html' %}
+        {% include 'authentication/reviews/review_card.html' %}
         
         {% endfor %}
         </div>

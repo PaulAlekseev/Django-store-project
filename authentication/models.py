@@ -31,10 +31,18 @@ class Review(models.Model):
 
 
 class Order(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        blank=False,
+        null=True,
+        on_delete=models.SET_NULL
+    )
     products = models.ManyToManyField(Product, through='OrderProduct')
     store = models.ManyToManyField(StoreProduct, through='OrderStore')
     date = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"Order № {self.id}"
 
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)

@@ -11,6 +11,7 @@ class Basket:
     def __init__(self, request):
         self.session = request.session
         self.query = None
+        self._changed = True
         basket = self.session.get('basket')
         if 'basket' not in request.session:
             basket = self.session['basket'] = {}
@@ -28,8 +29,9 @@ class Basket:
     def __iter__(self):
         product_ids = self._basket.keys()
 
-        if self.query is None:
+        if self.query is None or self._changed:
             self._new_queryset(product_ids)
+            self._changed = False
         products = self.query
         basket = deepcopy(self._basket)
 
@@ -50,6 +52,7 @@ class Basket:
 
     def clear(self):
         self._basket.clear()
+        self._changed = True
 
         self._save()
 
@@ -58,12 +61,14 @@ class Basket:
             self._basket[str(product_id)]['amount'] = 0
         else:
             self._basket[str(product_id)]['amount'] = required_amount
-            
+        
+        self._changed = True
         self._save()
 
     def delete_product(self, product_id):
         del self._basket[str(product_id)]
-
+        
+        self._changed = True
         self._save()
 
     def _save(self):

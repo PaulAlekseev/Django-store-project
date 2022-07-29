@@ -1,0 +1,26 @@
+
+<div class="col-12 border rounded-3">
+    <div class="row text-end">
+
+        <div class="col-12 mb-3">
+            <span class="fs-4 fw-bold">
+                {{ order }}
+            </span>
+        </div>
+
+        {% for orderproduct in products %}
+        <div class="col-12 border-bottom">
+            <a href="{{ orderproduct.product.get_absolute_url }}">
+                <span class="fs-5">
+                {{ orderproduct.product.name }}
+                </span>
+            </a>
+        </div>
+        {% endfor %}
+        <div class="col-12 mt-3">
+            <span class="fs-4">
+                date: {{ order.date }}
+            </span>
+        </div>
+    </div>
+</div>

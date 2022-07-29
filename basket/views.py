@@ -93,13 +93,18 @@ class CheckoutRedirectView(LoginRequiredMixin, generic.base.RedirectView):
 
     def get(self, request, *args, **kwargs):
         basket = Basket(request)
-        order=Order(date=datetime.now())
+        order=Order(
+            user=request.user,
+            date=datetime.now(),
+        )
         order.save()
         result = {}
 
+        print(basket._basket)
         for item in basket:
             if item['total_amount'] <= 0:
                 basket.delete_product(item['product'].id)
+        print(basket._basket)
         product_ids = [item['product'].id for item in basket]
         stores = StoreProduct.objects.filter(
             product__in=product_ids

@@ -66,10 +66,10 @@
                     {% endif %}
                     
                     {% if review.user == user %}
-                    <div class="col-2">
+                    <div class="col-12">
                         <a type="button" class="btn btn-outline-primary my-3" href="{% url 'authentication:update_review' review.id %}">Edit review</a>
                     </div>
-                    <div class="col-3">
+                    <div class="col-12">
                         <a type="button" class="btn btn-outline-primary my-3" href="{% url 'authentication:delete_review' review.id %}">Delete review</a>
                     </div>
                     {% endif %}
