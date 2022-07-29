@@ -4,53 +4,50 @@
 
 {% block content %}
 
+<div class="container" style="max-width: 1000px">
+    <div class="row">
 
-</div>
+        <div class="col-12 text-start my-3">
+            <span class=" fs-1 fw-bold">
+                Your basket
+            </span>
+        </div>
+        
+        {% for item in Products %}
+        <div class="col-12">
+            {% include 'basket/product_card_basket.html' %}
+        </div>
+        {% endfor %}
+        <div class="col-6 text-start">
+            <div class="row">
+                <div class="col-12">
+                    <button class="store-of-choise btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        Choose store
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        {% for store in Stores %}
+                        <li><span class="dropdown-item" onclick="changeStore(this)">{{ store.name }}</span></li>
+                        {% endfor %}
+                    </ul>
+                </div>
 
-    <div class="container" style="max-width: 1000px">
-        <div class="row">
-
-            <div class="col-12 text-start my-3">
-                <span class=" fs-1 fw-bold">
-                    Your basket
-                </span>
-            </div>
-            
-            {% for item in Products %}
-            <div class="col-12">
-                {% include 'basket/product_card_basket.html' %}
-            </div>
-            {% endfor %}
-            <div class="col-6 text-start">
-                <div class="row">
-                    <div class="col-12">
-                        <button class="store-of-choise btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            Choose store
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            {% for store in Stores %}
-                            <li><span class="dropdown-item" onclick="changeStore(this)">{{ store.name }}</span></li>
-                            {% endfor %}
-                        </ul>
+                <div class="col-12 mt-3">
+                    {% if user.is_authenticated %}
+                    <div class='checkout-button' style="display: none;">
+                        <button type="button" class="btn btn-primary" onclick="checkout()">Checkout</button>
                     </div>
-
-                    <div class="col-12 mt-3">
-                        {% if user.is_authenticated %}
-                        <div class='checkout-button' style="display: none;">
-                            <button type="button" class="btn btn-primary" onclick="checkout()">Checkout</button>
-                        </div>
-                        {% else %}
-                        <span>Login to checkout</span>
-                        {% endif %}
-                    </div>
+                    {% else %}
+                    <span>Login to checkout</span>
+                    {% endif %}
                 </div>
             </div>
+        </div>
 
-            <div class="col-6 text-end">
-                <span class="fs-1 fw-bold">Total price:<div id="total_price">{{ Total_price }}</div></span>
-            </div>
+        <div class="col-6 text-end">
+            <span class="fs-1 fw-bold">Total price:<div id="total_price">{{ Total_price }}</div></span>
         </div>
     </div>
+</div>
 <script>
 
     function change(obj){
