@@ -12,7 +12,7 @@
 
     <div class="col-8 border rounded-3">
         <span class="text-start fs-5">
-            Leave your feedback about {{ review.product.name }}
+            leave your feedback about {{ review.product.name }}
         </span>
         {% load crispy_forms_tags %}
         <form class="p-3" method="post" action="{% url 'authentication:create_review' product.slug %}">
@@ -31,7 +31,7 @@
             {{ form.rating|as_crispy_field }}
             </div>
     
-            <button class="btn btn-primary" name="submit">Add review</button>
+            <button class="btn btn-primary" name="submit">add review</button>
         </form>
     </div>
 

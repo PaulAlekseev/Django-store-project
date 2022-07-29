@@ -19,7 +19,7 @@ from .models import CustomUser, Review
 
 class CustomLoginView(LoginView):
 
-    template_name = 'authentication/login.html'
+    template_name = 'authentication/user/login.html'
     redirect_authenticated_user = True
     next_page = 'authentication:profile'
 
@@ -29,7 +29,7 @@ class CustomLogoutView(LoginRequiredMixin, LogoutView):
     
 
 class UserRegistrationFormView(generic.edit.FormView):
-    template_name = 'authentication/registration.html'
+    template_name = 'authentication/user/registration.html'
     form_class = RegistrationForm
     success_url = 'store:index'
 
@@ -71,27 +71,27 @@ class UserActivationView(generic.base.View):
         
 
 class UserProfileView(generic.list.ListView, LoginRequiredMixin):
-    template_name = 'authentication/profile.html'
+    template_name = 'authentication/user/profile.html'
     model = Category
 
 
 class CustomPasswordResetView(PasswordResetView):
-    template_name = 'authentication/password_reset_form.html'
-    email_template_name = "authentication/password_reset_email.html"
+    template_name = 'authentication/user/password_reset_form.html'
+    email_template_name = "authentication/user/password_reset_email.html"
     success_url = reverse_lazy('authentication:password_reset_done')
     
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):
-    template_name = 'authentication/password_reset_done.html'
+    template_name = 'authentication/user/password_reset_done.html'
 
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
-    template_name = 'authentication/password_reset_confirm.html'
+    template_name = 'authentication/user/password_reset_confirm.html'
     success_url = reverse_lazy('authentication:password_reset_complete')
 
 
 class CustomPassworwResetCompleteView(PasswordResetCompleteView):
-    template_name = 'authentication/password_reset_complete.html'
+    template_name = 'authentication/user/password_reset_complete.html'
 
 
 class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
