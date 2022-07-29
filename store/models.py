@@ -169,16 +169,3 @@ class StoreProduct(models.Model):
 
     def __str__(self):
         return self.product.name + ' from ' + self.store.name
-
-
-class PriceStory(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    price_tag = models.IntegerField(help_text='Outdated price for comparison')
-    date = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name_plural = 'Prices'
-        ordering = ('product', '-date')
-
-    def __str__(self):
-        return str(self.product)

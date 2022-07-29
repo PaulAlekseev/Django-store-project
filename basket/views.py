@@ -1,8 +1,6 @@
 from datetime import datetime
-from itertools import product
 from django.http import HttpResponse, JsonResponse
 from django.views import generic
-from django.db import Error
 from django.db.models import Sum, Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from store.models import Store, StoreProduct

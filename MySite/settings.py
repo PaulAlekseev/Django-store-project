@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'MySite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('database_name'),
+        'NAME': 'postgres',
         'USER': os.getenv('database_username'),
         'PASSWORD': os.getenv('password'),
         'HOST': os.getenv('database_hostname_or_ip'),
@@ -144,6 +144,7 @@ LOGIN_URL = 'authentication:login'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 
 if DEBUG:
     MIDDLEWARE += [

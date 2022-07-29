@@ -7,7 +7,6 @@ from store.models import Product
 
 class Basket:
 
-
     def __init__(self, request):
         self.session = request.session
         self.query = None
