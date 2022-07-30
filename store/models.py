@@ -69,18 +69,30 @@ class InnerCategory(models.Model):
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None, sort=True):
         features = self.features
 
+        # Converts features to correct format
         if features == None:
             features = {}
         if 'fields' not in features:
             features['fields'] = {}
         if 'requested_fields' not in features:
             features['requested_fields'] = []
+
+        # Syncronizes requested fields with fields
+        products = Product.objects.filter(
+            category__id=self.id
+        )
         for key in features['requested_fields']:
             if key not in features['fields']:
                 features['fields'][key] = []
+                features['fields'][key] = list(set([item.get_feature(key) for item in products]))
+                if None in features['fields'][key]:
+                    features['fields'][key].remove(None)
+
         for key in features['fields'].copy():
             if key not in features['requested_fields']:
                 del features['fields'][key]
+
+        # Sorts features for better view in filters
         if sort:
             for key in features['fields'].keys():
                 features['fields'][key] = sorted(features['fields'][key])
@@ -135,7 +147,6 @@ class Product(models.Model):
         return reverse('store:product_detail', args=[self.slug])
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-
         if self.features:
             category = InnerCategory.objects.get(id=self.category.id)
             category_features = category.features
@@ -157,6 +168,13 @@ class Product(models.Model):
                 category.save()
     
         return super().save(force_insert, force_update, using, update_fields)
+
+    def get_feature(self, feature_key):
+        if not self.features:
+            return None
+        if feature_key in self.features:
+            return self.features[feature_key]
+
 
 
 class StoreProduct(models.Model):
