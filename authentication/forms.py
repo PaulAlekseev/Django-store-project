@@ -1,9 +1,6 @@
-from dataclasses import fields
 from django import forms
 from .models import CustomUser
 from django.contrib.auth.forms import UserCreationForm
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(

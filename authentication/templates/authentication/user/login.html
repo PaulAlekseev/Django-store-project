@@ -26,6 +26,14 @@
             <div class="m-3">
             {{ form.password|as_crispy_field }}
             </div>
+            
+            <div class="text-center text-decoration-none text-reset mt-3">
+                <a class="text-decoration-none" href="{% url 'authentication:registration' %}">
+                    <span>
+                    Registration
+                    </span>
+                </a>
+            </div>
 
             <div class="text-center text-decoration-none text-reset">
                 <a class="text-decoration-none" href="{% url 'authentication:password_reset' %}">
