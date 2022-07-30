@@ -83,7 +83,6 @@ class InnerCategory(models.Model):
         )
         for key in features['requested_fields']:
             if key not in features['fields']:
-                features['fields'][key] = []
                 features['fields'][key] = list(set([item.get_feature(key) for item in products]))
                 if None in features['fields'][key]:
                     features['fields'][key].remove(None)
@@ -149,7 +148,7 @@ class Product(models.Model):
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.features:
             category = InnerCategory.objects.get(id=self.category.id)
-            category_features = category.features
+            category_features = category.features.copy()
             requested_fields = category.features['requested_fields']
 
             self.features = {key: str(item) for key, item in self.features.items()}
@@ -158,13 +157,10 @@ class Product(models.Model):
                 string_item = str(item)
                 if key not in requested_fields:
                     continue
-                if key not in category_features['fields']:
-                    category_features['fields'][key] = [string_item]
-                    category.save()
-                    continue
                 if string_item in category_features['fields'][key]:
                     continue
                 category_features['fields'][key].append(string_item)
+                category.features = category_features
                 category.save()
     
         return super().save(force_insert, force_update, using, update_fields)
