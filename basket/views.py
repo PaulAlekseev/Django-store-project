@@ -59,6 +59,7 @@ class BasketView(generic.list.ListView):
                 responce_data['agreement'] = False
                 responce_data['amount'] = current_amount
         else:
+            basket.update_item(product_id, 0)
             responce_data['agreement'] = 'Out of stock'
 
         response = JsonResponse(responce_data)
@@ -91,18 +92,18 @@ class CheckoutRedirectView(LoginRequiredMixin, generic.base.RedirectView):
 
     def get(self, request, *args, **kwargs):
         basket = Basket(request)
+        result = {}
+
+        for item in basket:
+            if item['total_amount'] <= 0:
+                basket.delete_product(item['product'].id)
+        if len(basket) == 0:
+            return super().get(request, *args, **kwargs)
         order=Order(
             user=request.user,
             date=datetime.now(),
         )
         order.save()
-        result = {}
-
-        print(basket._basket)
-        for item in basket:
-            if item['total_amount'] <= 0:
-                basket.delete_product(item['product'].id)
-        print(basket._basket)
         product_ids = [item['product'].id for item in basket]
         stores = StoreProduct.objects.filter(
             product__in=product_ids
@@ -142,8 +143,6 @@ class CheckoutRedirectView(LoginRequiredMixin, generic.base.RedirectView):
         for store in remaining_stores:
             product_id = store.product.id
             if product_id not in result:
-                continue
-            if result[product_id] == 0:
                 continue
             store.amount -= result[product_id]
             if store.amount < 0:
