@@ -17,6 +17,9 @@ class Basket:
         self._basket = basket
 
     def add(self, product_id):
+        """
+        Adds product to the basket depending on its id
+        """
         product_id = str(product_id)
 
         if product_id in self._basket:
@@ -27,19 +30,29 @@ class Basket:
 
 
     def update_item(self, product_id, required_amount):
-        if required_amount < 0:
-            self._basket[str(product_id)]['amount'] = 0
-        else:
-            self._basket[str(product_id)]['amount'] = required_amount
+        """
+        Updates product amount information
+        """
+        self._basket[str(product_id)]['amount'] = required_amount
         
         self._changed = True
         self._save()
 
     def delete_product(self, product_id):
+        """
+        Deletes a product from the basket
+        """
         del self._basket[str(product_id)]
         
         self._changed = True
         self._save()
+
+    def clear(self):
+        """
+        Clears basket
+        """
+        self._changed = True
+        self._basket.clear()
 
     def __iter__(self):
         product_ids = self._basket.keys()
@@ -61,27 +74,13 @@ class Basket:
                 self._save()
             item['total'] = item['amount'] * item['product'].price
             yield item
-
-    def keys(self):
-        return self._basket.keys()
-
-    def values(self):
-        return self._basket.values()
-
-    def items(self):
-        return self._basket.items()
-
-    def clear(self):
-        self._changed = True
-        self._basket.clear()
+    
+    def __len__(self):
+        return len(self._basket)
         
     def __getitem__(self, key):
         return self._basket[key]
 
-    def __dict__(self):
-        return self._basket
-
-        self._save()
     def _save(self):
         self.session.modified = True
 
