@@ -1,5 +1,5 @@
 
-<div class="col-12 border rounded-3">
+<div class="col-12 col-lg border rounded-3">
     <div class="row text-end">
 
         <div class="col-12 mb-3">
@@ -8,13 +8,25 @@
             </span>
         </div>
 
+        <div class="col-12 mb-3 text-center">
+            <span class="fs-4">
+                Products:
+            </span>
+        </div>
+
         {% for orderproduct in products %}
-        <div class="col-12 border-bottom">
+        <div class="col-10 border-bottom">
             <a href="{{ orderproduct.product.get_absolute_url }}">
                 <span class="fs-5">
                 {{ orderproduct.product.name }}
                 </span>
             </a>
+        </div>
+
+        <div class="col-2 border-bottom">
+                <span class="fs-5">
+                {{ orderproduct.amount }}
+                </span>
         </div>
         {% endfor %}
         <div class="col-12 mt-3">

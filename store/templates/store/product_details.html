@@ -17,15 +17,15 @@
     <div class="product-detail-header col-12 my-3 border rounded-3 p-3">
         <div class="row">
 
-            <div class="col-6 text-center">
+            <div class="col-12 col-md-6 text-center">
                     <img src="{{ Product.image.url }}">
             </div>
 
-            <div class="col-6 align-content-center">
+            <div class="col-12 col-md-6 align-content-center">
                 <div class="row">
 
-                    <div class="col-12 my-3">
-                        <span class="text-start fs-3">
+                    <div class="col-12 my-3 text-center text-md-start">
+                        <span class="fs-3">
                         {% for value in Product.features.values %}
                         {{ value }}, 
                         {% endfor %}
@@ -33,7 +33,7 @@
                     </div>
 
                     <div class="col-12 my-3">
-                        <div class="row text-start">
+                        <div class="row text-start text-end text-md-start">
                             {% if Product.number_of_shops > 0 %}
                             <div class="available-stores col-12">
                                 <span class="stores-count fs-6">
@@ -45,7 +45,7 @@
                                 </span>
                             </div>
                             {% else %}
-                            <div class="col-6">
+                            <div class="col-6 text-end text-md-start">
                                 <span class="out-of-stock fs-5">
                                     OUT OF STOCK
                                 </span>
@@ -56,17 +56,17 @@
 
                     <div class="col-12">
                         <div class="row my-3">
-                            <div class="col-12 text-start">
+                            <div class="col-12 text-end text-md-start">
                                 <span>
                                     <i class="fa-solid fa-star">{{ Product.avg_rating|floatformat:1 }}</i>
                                 </span>
                             </div>
-                            <div class="col-12 text-start mb-4 border rounded-3">
+                            <div class="col-12 text-end text-md-start mb-4 border rounded-3">
                                 <span class="fs-2 fw-bold">
                                 {{ Product.price }} ₽
                                 </span>
                             </div>
-                            <div class="col-12">
+                            <div class="col-12 text-end text-md-start">
                                 <button type="button" class="btn btn-outline-primary" onclick="clicked(this)" id="{{ Product.id }}">Add to basket</button>
                             </div>
                         </div>
@@ -79,7 +79,7 @@
     </div>
 
 
-    <div class="col border rounded-3 p-3">
+    <div class="col-12 col-md border rounded-3 p-3">
         <div class="row">
             {% if Product.features|length == 0 %}
                 <span class="text-center fs-4 col-12">
@@ -108,7 +108,7 @@
         </span>
     </div>
 
-    <div class="col-8 border rounded-3 ms-3">
+    <div class="col-12 col-md-8 border rounded-3 ms-3">
         <div class="row p-3">
 
             <div class="col-12">

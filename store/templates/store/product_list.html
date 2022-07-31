@@ -11,10 +11,12 @@
 
 <div class="product_list row">
 
-  <div class="filters col-3">
+  <div class="filters col-12 col-sm-3">
+
     <div>
       <input class="search form-control mb-3" type="search" placeholder="Search in {{ Category }}" value="{{ search }}" aria-label="Search">
     </div>
+
     <div class="container border rounded-3 p-2">
       {% if not Category.features.fields.items %}
       <h4>There is no filters</h4>
@@ -23,12 +25,15 @@
       <div class="row">
       {% for field, values in Category.features.fields.items %}
         <div class="col-12 text-center">
+
           <div class="border-bottom">
+
           <p class="collapse-button">
             <button class="filter-button btn" data-bs-toggle="collapse" href="#collapse{{ field }}">
               <h5 class="text-center">{{ field }}</h5>
             </button>
           </p>
+
           <div class="collapse" id="collapse{{ field }}">
             <div class="list-group" name="myfilters">
               {% for value in values %}
@@ -39,19 +44,22 @@
               {% endfor %}
             </div>
           </div>
+
           </div>
         </div>
       {% endfor %}
       </div>
+
       <div class="d-grid my-3">
         <button type="button align-content-center" class="btn btn-primary btn-sm mb-3 fs-6" onclick="checkbox_clicked(this)">Apply</button>
         <a type="button align-content-center" class="btn btn-outline-primary fs-6" href="{{ Category.get_absolute_url }}">Reset filters</a>
       </div>
+
       {% endif %}
     </div>
   </div>
 
-  <div class="products col">
+  <div class="products col-12 col-sm">
     {% for item in Products %}
 
     {% include 'store/product/product_card.html' %}

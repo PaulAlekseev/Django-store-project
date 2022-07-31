@@ -6,13 +6,13 @@
 {% block content %}
 <div class="row m-3">
 
-    <div class="col-2">
+    <div class="col-md-2">
 
     </div>
 
-    <div class="col-8 border rounded-3">
+    <div class="col-12 col-md-8 border rounded-3">
         <span class="text-start fs-5">
-            leave your feedback about {{ review.product.name }}
+            Leave your feedback about {{ product.name }}
         </span>
         {% load crispy_forms_tags %}
         <form class="p-3" method="post" action="{% url 'authentication:create_review' product.slug %}">

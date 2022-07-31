@@ -1,15 +1,15 @@
 
-<div class="card mb-4 rounded-3 shadow-sm">
+<div class="product-card card mb-4 rounded-3 shadow-sm">
     <div class="card-body row">
-        <div class="col-3">
-            <div class="product-image col-3">
-                <div class="m-2">
+        <div class="col-12 col-xl-4">
+            <div class="product-image col-12 col-xl-3">
+                <div class="m-2 text-center">
                     <img src="{{ item.image.url }}">
                 </div>
             </div>
         </div>
 
-        <div class="col-6">
+        <div class="col-12 col-xl-5">
             <div class="product-name">
                 <a class="product-about text-decoration-none text-reset mx-auto align-self-start" href="{{ item.get_absolute_url }}">
                     <span class="product-name-link text-start fs-4 ">{{ item.name }}</span>
@@ -40,18 +40,18 @@
                         Available: in {{ item.number_of_shops }} stores
                         {% endif %}
                         </span>
-                </div>
-                {% else %}
-                <div class="col-6">
-                    <span class="out-of-stock fs-5">
-                    OUT OF STOCK
-                    </span>
-                </div>
-                {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="col-12">
+                        <span class="out-of-stock fs-5">
+                        OUT OF STOCK
+                        </span>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
-        <div class="product-buy col-3">
+        <div class="product-buy col-12 col-xl">
             <div class="row">
                 <div class="col-12 text-end mb-4">
                     <span class="fs-2 fw-bold">

@@ -35,3 +35,12 @@ body {
     margin-top: 200px;
     margin-bottom: 300px;
 }
+
+img {
+    display: block;
+    width: 200px;
+  }
+
+.product-card {
+    min-height: 250px;
+}

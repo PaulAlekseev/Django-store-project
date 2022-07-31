@@ -9,7 +9,7 @@
     <div class="col-4">
 
     </div>
-    <div class="delete-review-form col-4 text-center">
+    <div class="delete-review-form col-12 col-md-4 text-center">
         <div class="row">
 
             <div class="col-12 text-center mb-4">
@@ -21,14 +21,14 @@
             <div class="col-12">
 
                 <div class="row align-items-center">
-                    <div class="col-6 text-end">
+                    <div class="col-12 col-md-6 text-center">
                         <form method="post" action="{% url 'authentication:delete_review' review.id %}">
                             {% csrf_token %}
                             <button class="btn btn-primary mx-3" name="submit">Delete review</button>
                         </form>
                     </div>
 
-                    <div class="col-6 text-start">
+                    <div class="col-12 col-md-6 text-center">
                         <a href="{{ review.product.get_absolute_url }}">Cancel</a>
                     </div>
             </div>

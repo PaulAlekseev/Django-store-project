@@ -13,7 +13,7 @@
             </span>
         </div>
         
-        <div class="col-3 border">
+        <div class="col-12 col-lg-3">
 
             <div class="my-3">
                 <span class="fs-4 fw-bold text-start">
@@ -36,13 +36,11 @@
 
         </div>
 
-        <div class="col-9">
         {% for order, products in Orders.items %}
 
         {% include 'authentication/user/order_card.html' %}
         
         {% endfor %}
-        </div>
     </div>
 </div>
 

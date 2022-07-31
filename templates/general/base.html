@@ -19,22 +19,21 @@
 </head>
 
 <body>
-<nav class="navbar-base navbar-expand-lg navbar-light bg-light">
     <div class="container">
-        <header class="header row p-2 align-items-center">
-            <div class='col-2'>
+        <header class="header row p-2 align-items-center border-bottom">
+            <div class='col-12 col-md-2 py-1 text-center'>
                 <a class="text-decoration-none text-reset" href="/">
                     <i class="fa-solid fa-lightbulb fa-xl"><span class="fs-5">Store</span></i>
                 </a>
             </div>
 
-            <div class="col">
+            <div class="col-12 col-md py-1">
                 <form method="get" action="{% url 'store:search' %}">
                     {% crispy search_form %}
                 </form>
             </div>
 
-            <div class="col-2">
+            <div class="col-12 col-md-3 py-1 text-center">
                 <a class="text-decoration-none text-reset" href="{% url 'basket:summary' %}">
                     <i class="fa-solid fa-basket-shopping fa-xl"></i>
                 </a>
@@ -54,7 +53,6 @@
             </div>
         </header>
     </div>
-</nav>
 <div class="container">
     {% block content %}
     {% endblock %}

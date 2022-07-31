@@ -4,37 +4,56 @@
 
 {% block content %}
 
-<form method="post" action="{% url 'authentication:registration' %}">
-    {% csrf_token %}
-    {% if form.errors %}
-    <p>Please correct the following errors:</p>
-    {% for field in form %}
-    {% if field.errors %}
-    <div class="alert alert-primary" role="alert">
-        {{ field.label }}: {{ field.errors|striptags }}
+<div class="row py-5">
+
+    <div class="col-3">
+
     </div>
-    {% endif %}
-    {% endfor %}
-    {% endif %}
-    <table>
-        <tr>
-            <td>{{ form.username.label_tag }}</td>
-            <td>{{ form.username }}</td>
-        </tr>
-        <tr>
-            <td>{{ form.email.label_tag }}</td>
-            <td>{{ form.email }}</td>
-        </tr>
-        <tr>
-            <td>{{ form.password1.label_tag }}</td>
-            <td>{{ form.password1 }}</td>
-        </tr>
-        <tr>
-            <td>{{ form.password2.label_tag }}</td>
-            <td>{{ form.password2 }}</td>
-        </tr>
-    </table>
-    <input type="submit" value="registration">
-</form>
+
+    <div class="col-12 col-md-6 border rounded-3 mt-3">
+        <div class="text-center fs-3">
+            <span class="">
+                Login
+            </span>
+        </div>
+        {% load crispy_forms_tags %}
+        <form method="post" action="{% url 'authentication:registration' %}">
+    
+            {% csrf_token %}
+            {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="m-3">
+            {{ form.username|as_crispy_field }}
+            </div>
+            <div class="m-3">
+            {{ form.email|as_crispy_field }}
+            </div>
+            <div class="m-3">
+            {{ form.password1|as_crispy_field }}
+            </div>
+            <div class="m-3">
+            {{ form.password2|as_crispy_field }}
+            </div>
+            
+            <div class="text-center">
+                <button class="btn btn-primary m-3" name="submit">Login</button>
+            </div>
+        </form>
+    </div>
+
+</div>
 
 {% endblock %}
