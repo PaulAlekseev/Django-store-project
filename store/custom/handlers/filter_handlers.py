@@ -28,7 +28,7 @@ class FeaturesFilterHandler(FilterHandler):
 class SearchFilterHandler(FilterHandler):
 
     def _handle_filter(self):
-        self._filter = {'name__icontains':self._data}
+        self._filter = {'name__icontains': self._data}
 
 
 feature_filter_handler = FeaturesFilterHandler()

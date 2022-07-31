@@ -25,7 +25,9 @@ class InnerCategoryAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     fieldsets = [
         (None, {'fields': ['name', 'category', 'image', 'slug']}),
-        ('Information', {'fields': ['description', 'guarantee', 'features', 'price']}),
+        ('Information', {'fields': [
+            'description', 'guarantee', 'features', 'price'
+        ]}),
         ('Status', {'fields': ['is_active']}),
     ]
     inlines = [AvailabilityInline, ]

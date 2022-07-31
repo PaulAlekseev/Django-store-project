@@ -1,4 +1,5 @@
-from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+from django.contrib.auth.views import \
+ LoginView, LogoutView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import login
 from django.contrib.sites.shortcuts import get_current_site
@@ -25,7 +26,7 @@ class CustomLoginView(LoginView):
 
 class CustomLogoutView(LoginRequiredMixin, LogoutView):
     next_page = 'store:index'
-    
+
 
 class UserRegistrationFormView(generic.edit.FormView):
     template_name = 'authentication/user/registration.html'
@@ -45,18 +46,18 @@ class UserRegistrationFormView(generic.edit.FormView):
         })
         user.email_user(subject=subject, message=message)
         return super().form_valid(form)
-            
+
     def get_success_url(self):
         return resolve_url(str(self.success_url))
 
 
 class UserActivationView(generic.base.View):
-    
+
     def get(self, *args, **kwargs):
         try:
             uid = force_str(urlsafe_base64_decode(self.kwargs.get('uidb64')))
             user = CustomUser.objects.get(pk=uid)
-        except(TypeError, ValueError, OverflowError, user.DoesNotExist):
+        except (TypeError, ValueError, OverflowError, user.DoesNotExist):
             user = None
         if user is not None and account_activation_token.check_token(user, self.kwargs.get('token')):
             user.is_active = True
@@ -65,7 +66,7 @@ class UserActivationView(generic.base.View):
             return redirect('authentication:profile')
         else:
             return HttpResponse('2')
-        
+
 
 class UserProfileView(generic.list.ListView, LoginRequiredMixin):
     template_name = 'authentication/user/profile.html'
@@ -97,14 +98,15 @@ class UserReviewView(LoginRequiredMixin, generic.list.ListView):
 
     def get_queryset(self):
         query = Review.objects.filter(user__id=self.request.user.id)
-        
+
         return query
+
 
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'authentication/user/password_reset_form.html'
     email_template_name = "authentication/user/password_reset_email.html"
     success_url = reverse_lazy('authentication:password_reset_done')
-    
+
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):
     template_name = 'authentication/user/password_reset_done.html'

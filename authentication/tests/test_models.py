@@ -23,5 +23,5 @@ class TestAuthenticationModels(TestCase):
         )
 
         review_string = str(review)
-        
+
         self.assertEqual(review_string, f'Review on {product} written by {user}')

@@ -70,14 +70,13 @@ class TestBasketView(TestCase):
             'total': 0
         }])
 
-
     def test_basket_add(self):
         """
         Test adding item to the basket
         """
         response = self.client.post(reverse('basket:basket_add'), {'productid': self.product1.id})
         basket = Basket(response.wsgi_request)
-        self.assertEqual(basket._basket, {str(self.product1.id):{'amount': 2}})
+        self.assertEqual(basket._basket, {str(self.product1.id): {'amount': 2}})
 
     def test_basket_patch_with_agreement(self):
         """
@@ -138,7 +137,7 @@ class TestBasketView(TestCase):
         """
         Test updating item in the basket with its actual amount equals 0
         """
-        
+
         self.storeproduct1.amount = 0
         self.storeproduct1.save()
 
@@ -165,10 +164,10 @@ class TestBasketView(TestCase):
         }
         data_json = json.dumps(data)
         response = self.client.delete(reverse('basket:basket_update'), data_json)
-        self.assertEqual(response.json(), {'total': '0',})
+        self.assertEqual(response.json(), {'total': '0', })
         basket = Basket(response.wsgi_request)
         self.assertEqual(basket._basket, {})
-    
+
 
 class TestBasketCheckout(TestCase):
     def setUp(self):
@@ -194,7 +193,7 @@ class TestBasketCheckout(TestCase):
         )
         self.client.post(reverse('basket:basket_add'), {'productid': self.product1.id})
         self.client.login(username='User1', password='User1password')
-        
+
         class BasketHandler():
 
             def set_basket_amount(amount, product_id):
@@ -205,10 +204,8 @@ class TestBasketCheckout(TestCase):
                 }
                 data_json = json.dumps(data)
                 self.client.patch(reverse('basket:basket_update'), data_json)
-        
-        self.basket_handler = BasketHandler
 
-        
+        self.basket_handler = BasketHandler
 
     def test_basket_checkout_one_to_one_ratio(self):
         """
@@ -227,7 +224,6 @@ class TestBasketCheckout(TestCase):
         order = Order.objects.filter(products__id=self.product1.id).exists()
         self.assertEqual(order, True)
 
-        
     def test_basket_checkout_two_store(self):
         """
         Test checkout with more then 1 store
@@ -242,7 +238,7 @@ class TestBasketCheckout(TestCase):
         orders_amount = OrderStore.objects.filter(storeproduct__product__id=self.product1.id).count()
         self.assertEqual(orders_amount, 2)
         orders = OrderStore.objects.filter(storeproduct__product__id=self.product1.id)
-        self.assertEqual(sum([item.amount for item in orders]) , 13)
+        self.assertEqual(sum([item.amount for item in orders]), 13)
         order_product = OrderProduct.objects.filter(product__id=self.product1.id).count()
         self.assertEqual(order_product, 1)
         order = Order.objects.filter(products__id=self.product1.id).exists()
@@ -257,7 +253,7 @@ class TestBasketCheckout(TestCase):
         self.basket_handler.set_basket_amount(13, self.product1.id)
 
         self.client.get(reverse('basket:checkout', kwargs={'store': self.store1.name}))
-        
+
         order_store = OrderStore.objects.filter(storeproduct__product__id=self.product1.id).exists()
         self.assertEqual(order_store, 0)
         order = Order.objects.filter(products__id=self.product1.id).exists()
@@ -282,7 +278,7 @@ class TestBasketCheckout(TestCase):
         orders_amount = OrderStore.objects.filter(storeproduct__product__id=self.product1.id).count()
         self.assertEqual(orders_amount, 3)
         orders = OrderStore.objects.filter(storeproduct__product__id=self.product1.id)
-        self.assertEqual(sum([item.amount for item in orders]) , 23)
+        self.assertEqual(sum([item.amount for item in orders]), 23)
         order_product = OrderProduct.objects.filter(product__id=self.product1.id).count()
         self.assertEqual(order_product, 1)
         order = Order.objects.filter(products__id=self.product1.id).exists()
@@ -307,5 +303,3 @@ class TestBasketCheckout(TestCase):
         self.assertEqual(order_product, 1)
         order = Order.objects.filter(products__id=self.product1.id).exists()
         self.assertEqual(order, True)
-
-    

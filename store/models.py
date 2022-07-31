@@ -70,7 +70,7 @@ class InnerCategory(models.Model):
         features = self.features
 
         # Converts features to correct format
-        if features == None:
+        if features is None:
             features = {}
         if 'fields' not in features:
             features['fields'] = {}
@@ -162,7 +162,7 @@ class Product(models.Model):
                 category_features['fields'][key].append(string_item)
                 category.features = category_features
                 category.save()
-    
+
         return super().save(force_insert, force_update, using, update_fields)
 
     def get_feature(self, feature_key):
@@ -170,7 +170,6 @@ class Product(models.Model):
             return None
         if feature_key in self.features:
             return self.features[feature_key]
-
 
 
 class StoreProduct(models.Model):

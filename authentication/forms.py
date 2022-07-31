@@ -2,6 +2,7 @@ from django import forms
 from .models import CustomUser
 from django.contrib.auth.forms import UserCreationForm
 
+
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(
         max_length=70,
@@ -11,14 +12,14 @@ class RegistrationForm(UserCreationForm):
     class Meta:
         model = CustomUser
         fields = ('username', 'email')
-    
+
     def clean_email(self):
         email = self.cleaned_data['email']
         if CustomUser.objects.filter(email=email).exists():
             raise forms.ValidationError(
                 'Please use another Email, that is already taken')
         return email
-    
+
     def save(self, commit=True):
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
@@ -27,4 +28,3 @@ class RegistrationForm(UserCreationForm):
         if commit:
             user.save()
         return user
-

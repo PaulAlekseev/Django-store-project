@@ -1,5 +1,3 @@
-from itertools import product
-from unicodedata import category
 from django.test import TestCase
 
 from ..models import InnerCategory, Product, Store, StoreProduct
@@ -9,7 +7,7 @@ class TestStoreModels(TestCase):
 
     def setUp(self):
         self.category = InnerCategory.objects.create(
-            name='Category', slug='Category', features= None
+            name='Category', slug='Category', features=None
         )
         self.product = Product.objects.create(
             name='Product', slug='Product', guarantee=12, price=399, category=self.category,
@@ -20,7 +18,6 @@ class TestStoreModels(TestCase):
         """
         Test for inner categories prepopulated features
         """
-        category = InnerCategory.objects.all()[0]
 
         self.assertEqual(self.category.features, {'fields': {}, 'requested_fields': []})
 
@@ -54,7 +51,7 @@ class TestStoreModels(TestCase):
 
     def test_store_inner_category_model_save_method_on_updating(self):
         """
-        Test for Inner category save method with addition of feature requested fields 
+        Test for Inner category save method with addition of feature requested fields
         """
         Product.objects.create(
             name='Product1', slug='Product1', guarantee=12, price=399, category=self.category,
@@ -83,7 +80,7 @@ class TestStoreModels(TestCase):
         self.assertEqual(category1.features['fields'], {
             'feature1': ['2'], 'feature2': ['3', '4'], 'feature3': ['Nineteen', 'five'], 'feature4': []
             })
-    
+
     def test_storeproduct_string_method(self):
         """
         Test on storeproduct string method
@@ -93,7 +90,7 @@ class TestStoreModels(TestCase):
             store=store, product=self.product, amount=2
         )
         store_product_string = str(store_product)
-        
+
         self.assertEqual(store_product_string, self.product.name + ' from ' + store.name)
 
     def test_product_string(self):

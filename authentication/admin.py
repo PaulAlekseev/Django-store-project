@@ -8,12 +8,13 @@ class OrderProductAdmin(admin.ModelAdmin):
 
     ordering = ('-order', )
 
+
 class OrderStoreAdmin(admin.ModelAdmin):
     list_display = ('order', 'storeproduct', 'amount')
 
     ordering = ('-order', )
-    
-    
+
+
 admin.site.register(CustomUser, UserAdmin)
 admin.site.register(Order)
 admin.site.register(OrderProduct, OrderProductAdmin)

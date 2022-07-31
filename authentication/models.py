@@ -25,7 +25,7 @@ class Review(models.Model):
 
     class META:
         unique_together = ['product', 'user']
-    
+
     def __str__(self):
         return f'Review on {self.product} written by {self.user}'
 
@@ -43,6 +43,7 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order № {self.id}"
+
 
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)

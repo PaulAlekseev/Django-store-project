@@ -67,7 +67,7 @@ class ProductDetailView(generic.detail.DetailView):
         obj = get_annotated_products(
             Product.objects.filter(slug=self.kwargs['slug'])
         )[0]
-        
+
         return obj
 
     def get_context_data(self, **kwargs):

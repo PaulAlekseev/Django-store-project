@@ -2,7 +2,7 @@ from .filter_handlers import filter_keyword_dictionary
 
 
 class ProductFormer:
-    
+
     def __init__(self, filter_handlers):
         self._filter_handlers = filter_handlers
         self._query = None
@@ -21,6 +21,6 @@ class ProductFormer:
         self._filters = filters
         products = self._form_product()
         return products
-        
+
 
 product_former = ProductFormer(filter_keyword_dictionary)

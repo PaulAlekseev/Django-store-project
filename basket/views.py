@@ -28,14 +28,14 @@ class BasketView(generic.list.ListView):
         return context
 
     def post(self, request, *args, **kwargs):
-        basket = Basket(request) 
+        basket = Basket(request)
         data = request.POST
         product_id = int(data['productid'])
 
         basket.add(product_id=product_id)
 
         return HttpResponse('1')
-    
+
     def patch(self, request, *args, **kwargs):
         basket = Basket(request)
         data = json.loads(request.body)
@@ -72,11 +72,11 @@ class BasketView(generic.list.ListView):
         product_id = data['product_id']
         total_price = data['total_price']
         current_amount = basket[str(product_id)]['amount']
-        
+
         product = Product.objects.get(id=product_id)
 
         response_data['total'] = str(int(total_price) - product.price * current_amount)
-        
+
         basket.delete_product(product_id)
 
         responce = JsonResponse(response_data)
@@ -99,7 +99,7 @@ class CheckoutRedirectView(LoginRequiredMixin, generic.base.RedirectView):
                 basket.delete_product(item['product'].id)
         if len(basket) == 0:
             return super().get(request, *args, **kwargs)
-        order=Order(
+        order = Order(
             user=request.user,
             date=datetime.now(),
         )
@@ -128,10 +128,10 @@ class CheckoutRedirectView(LoginRequiredMixin, generic.base.RedirectView):
                 order=order,
                 storeproduct=store,
                 amount=took
-                ) 
+                )
             order_store.save()
             store.save()
-        
+
         for id in product_ids:
             if id not in result:
                 result.update({str(id): basket[str(id)]['amount']})
@@ -160,7 +160,7 @@ class CheckoutRedirectView(LoginRequiredMixin, generic.base.RedirectView):
             )
             order_store.save()
             store.save()
-        
+
         for item in basket:
             order_product = OrderProduct(
                 order=order,

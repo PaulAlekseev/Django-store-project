@@ -28,13 +28,12 @@ class Basket:
             self._basket[product_id] = {'amount': 1}
         self._save()
 
-
     def update_item(self, product_id, required_amount):
         """
         Updates product amount information
         """
         self._basket[str(product_id)]['amount'] = required_amount
-        
+
         self._changed = True
         self._save()
 
@@ -43,7 +42,7 @@ class Basket:
         Deletes a product from the basket
         """
         del self._basket[str(product_id)]
-        
+
         self._changed = True
         self._save()
 
@@ -65,8 +64,8 @@ class Basket:
 
         for product in products:
             basket[str(product.id)]['product'] = product
-            basket[str(product.id)]['total_amount'] = product.total_amount if product.total_amount != None else 0
-        
+            basket[str(product.id)]['total_amount'] = product.total_amount if product.total_amount is not None else 0
+
         for item in basket.values():
             if item['amount'] > item['total_amount']:
                 item['amount'] = item['total_amount']
@@ -74,10 +73,10 @@ class Basket:
                 self._save()
             item['total'] = item['amount'] * item['product'].price
             yield item
-    
+
     def __len__(self):
         return len(self._basket)
-        
+
     def __getitem__(self, key):
         return self._basket[key]
 
@@ -86,5 +85,5 @@ class Basket:
 
     def _new_queryset(self, product_ids):
         self.query = Product.objects.filter(id__in=product_ids).annotate(
-            total_amount= Sum('storeproduct__amount')
+            total_amount=Sum('storeproduct__amount')
         )

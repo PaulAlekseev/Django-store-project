@@ -3,6 +3,7 @@ from django.test import TestCase
 from authentication.models import CustomUser
 from authentication.forms import RegistrationForm
 
+
 class TestAuthenticationForm(TestCase):
 
     def setUp(self):
@@ -12,7 +13,7 @@ class TestAuthenticationForm(TestCase):
             'password1': 'pASs12345678',
             'password2': 'pASs12345678'
         }
-        
+
     def test_form_is_valid(self):
         """
         Test if form is valid
@@ -42,4 +43,3 @@ class TestAuthenticationForm(TestCase):
         user = CustomUser.objects.filter(username='User1')
         self.assertTrue(user.exists())
         self.assertFalse(user[0].is_active)
-        

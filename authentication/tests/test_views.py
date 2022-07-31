@@ -1,6 +1,4 @@
 from base64 import urlsafe_b64encode
-from itertools import product
-from unicodedata import category
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.encoding import force_bytes, force_str
@@ -51,7 +49,7 @@ class TestAuthenticationRegistrationViews(TestCase):
         )
         uid = urlsafe_b64encode(force_bytes(user.pk)),
         token = account_activation_token.make_token(user=user)
-        
+
         response = self.client.get(reverse('authentication:activation', kwargs={
             'uidb64': force_str(uid[0])[:2], 'token': token
         }))
@@ -68,7 +66,7 @@ class TestAuthenticationRegistrationViews(TestCase):
             username='User1', email='User1@mail.ru', is_active=False
         )
         uid = urlsafe_b64encode(force_bytes(user.pk)),
-        
+
         response = self.client.get(reverse('authentication:activation', kwargs={
             'uidb64': force_str(uid[0])[:2], 'token': 'b9eqeb-85a7fe5cd1d0abd39b7fc5ee77fc6e01'
         }))
@@ -134,7 +132,7 @@ class TestauthenticationLoginRequiredViews(TestCase):
 
 
 class TestAuthenticationReviewViews(TestCase):
-    
+
     def setUp(self):
         self.category = InnerCategory.objects.create(
             name='Category', slug='Category', features=None
@@ -150,7 +148,7 @@ class TestAuthenticationReviewViews(TestCase):
         self.user.set_password('User1password')
         self.user.save()
         self.client.login(username='Name', password='User1password')
-        
+
     def test_if_review_create_accessible(self):
         """
         Test if review create is accessible
@@ -167,10 +165,12 @@ class TestAuthenticationReviewViews(TestCase):
             'user': self.user,
             'rating': 2,
         }
-        response = self.client.post(reverse('authentication:create_review', kwargs={'slug': self.product.slug}), form_data)
+        response = self.client.post(
+            reverse('authentication:create_review', kwargs={'slug': self.product.slug}), form_data
+        )
 
         self.assertEqual(response.status_code, 302)
-    
+
     def test_review_create_on_invalid_data(self):
         """
         Test for invalid data on review create
@@ -179,7 +179,9 @@ class TestAuthenticationReviewViews(TestCase):
             'user': self.user,
             'rating': 6,
         }
-        response = self.client.post(reverse('authentication:create_review', kwargs={'slug': self.product.slug}), form_data)
+        response = self.client.post(reverse(
+            'authentication:create_review', kwargs={'slug': self.product.slug}), form_data
+        )
 
         self.assertEqual(response.status_code, 200)
 
@@ -208,7 +210,7 @@ class TestAuthenticationReviewViews(TestCase):
         response = self.client.post(reverse('authentication:update_review', kwargs={'id': review.id}), form_data)
 
         self.assertEqual(response.status_code, 302)
-    
+
     def test_review_update_on_invalid_data(self):
         """
         Test for invalid data on review update
@@ -234,4 +236,3 @@ class TestAuthenticationReviewViews(TestCase):
         response = self.client.post(reverse('authentication:delete_review', kwargs={'id': review.id}))
 
         self.assertEqual(response.status_code, 302)
-    

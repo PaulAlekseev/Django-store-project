@@ -1,4 +1,4 @@
-from django.db.models import Count, Q, Sum, Avg
+from django.db.models import Count, Q, Avg
 
 
 def get_annotated_products(products_queryset):
