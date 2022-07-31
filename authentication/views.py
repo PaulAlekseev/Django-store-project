@@ -1,6 +1,4 @@
-from urllib import request
 from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
-from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import login
 from django.contrib.sites.shortcuts import get_current_site
@@ -49,8 +47,6 @@ class UserRegistrationFormView(generic.edit.FormView):
         return super().form_valid(form)
             
     def get_success_url(self):
-        if not self.success_url:
-            raise ImproperlyConfigured("No URL to redirect to. Provide a success_url.")
         return resolve_url(str(self.success_url))
 
 
@@ -95,13 +91,12 @@ class UserProfileView(generic.list.ListView, LoginRequiredMixin):
         return query
 
 
-class UserReviewView(generic.list.ListView, LoginRequiredMixin):
+class UserReviewView(LoginRequiredMixin, generic.list.ListView):
     template_name = 'authentication/user/profile_review.html'
     context_object_name = 'Reviews'
 
     def get_queryset(self):
-        query = Review.objects.filter(user=self.request.user)
-        print(query)
+        query = Review.objects.filter(user__id=self.request.user.id)
         
         return query
 
@@ -141,7 +136,7 @@ class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        product = get_object_or_404(Product, slug=self.kwargs.get('slug'))
+        product = get_object_or_404(Product.objects.filter(slug=self.kwargs.get('slug')))
         context.update({
             'product': product,
         })

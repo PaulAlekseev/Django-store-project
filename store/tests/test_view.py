@@ -1,5 +1,3 @@
-from unicodedata import category
-from urllib import response
 from django.test import TestCase
 from django.urls import reverse
 
