@@ -4,7 +4,9 @@ from .string_handlers import string_to_dictionary
 
 
 class FilterHandler(ABC):
-
+    """
+    Abstract class of a filter model
+    """
     _data = None
 
     @abstractmethod
@@ -19,14 +21,18 @@ class FilterHandler(ABC):
 
 
 class FeaturesFilterHandler(FilterHandler):
-
+    """
+    Filter for the features
+    """
     def _handle_filter(self):
         data = string_to_dictionary(self._data)
         self._filter = {f'features__{key}__in': item for key, item in data.items()}
 
 
 class SearchFilterHandler(FilterHandler):
-
+    """
+    Filter for the search
+    """
     def _handle_filter(self):
         self._filter = {'name__icontains': self._data}
 

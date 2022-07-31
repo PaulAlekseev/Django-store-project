@@ -4,6 +4,9 @@ from django.contrib.auth.forms import UserCreationForm
 
 
 class RegistrationForm(UserCreationForm):
+    """
+    Registration form
+    """
     email = forms.EmailField(
         max_length=70,
         help_text='Required'

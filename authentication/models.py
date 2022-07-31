@@ -10,6 +10,9 @@ class CustomUser(AbstractUser):
 
 
 class Review(models.Model):
+    """
+    Review model
+    """
     user = models.ForeignKey(
         CustomUser,
         blank=False,
@@ -31,6 +34,11 @@ class Review(models.Model):
 
 
 class Order(models.Model):
+    """
+    Order
+    Model that combines OrderProduct and OrderStore 
+    which together represent the user's orderthat 
+    """
     user = models.ForeignKey(
         CustomUser,
         blank=False,
@@ -46,12 +54,20 @@ class Order(models.Model):
 
 
 class OrderProduct(models.Model):
+    """
+    Model that represents information about
+    how much of a particular product is in an order
+    """
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     amount = models.IntegerField(default=0)
 
 
 class OrderStore(models.Model):
+    """
+    Model that represents informatino about
+    how much of a particular product was taken from each store
+    """
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     storeproduct = models.ForeignKey(StoreProduct, on_delete=models.CASCADE)
     amount = models.IntegerField(default=0)

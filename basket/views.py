@@ -14,6 +14,14 @@ import json
 
 
 class BasketView(generic.list.ListView):
+    """
+    Used to interact with user's basket:
+
+    GET - returns list of product
+    POST - adds product
+    PATCH - updates amount of products
+    DELETE - deletes product
+    """
     template_name = 'basket/basket.html'
     context_object_name = 'Products'
 
@@ -84,6 +92,10 @@ class BasketView(generic.list.ListView):
 
 
 class CheckoutRedirectView(LoginRequiredMixin, generic.base.RedirectView):
+    """
+    Used to convert products in the basket into an Order model instance with
+    its child models OrderProduct and OrderStore
+    """
     pattern_name = 'authentication:profile'
 
     def get_redirect_url(self, *args, **kwargs):

@@ -6,10 +6,16 @@ from mptt.models import TreeForeignKey, MPTTModel
 
 class ProductManager(models.Manager):
     def get_queryset(self):
+        """
+        Return on active products
+        """
         return super(ProductManager, self).get_queryset().filter(is_active=True)
 
 
 class Category(MPTTModel):
+    """
+    Outter category
+    """
     name = models.CharField(max_length=100)
     parent = TreeForeignKey(
         'self',
@@ -38,6 +44,9 @@ class Category(MPTTModel):
 
 
 class InnerCategory(models.Model):
+    """
+    Inner category
+    """
     name = models.CharField(max_length=100)
     category = models.ForeignKey(
         Category,
@@ -100,6 +109,9 @@ class InnerCategory(models.Model):
 
 
 class Store(models.Model):
+    """
+    Store model that stores products
+    """
     name = models.CharField(max_length=150)
     location = models.CharField(max_length=150)
 
@@ -111,6 +123,9 @@ class Store(models.Model):
 
 
 class Product(models.Model):
+    """
+    Product model
+    """
     name = models.CharField(max_length=70)
     category = models.ForeignKey(InnerCategory, null=True, on_delete=models.SET_NULL)
     slug = models.SlugField(unique=True)
@@ -173,6 +188,9 @@ class Product(models.Model):
 
 
 class StoreProduct(models.Model):
+    """
+    Model that stores amount of Product in concrete Store
+    """
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     amount = models.IntegerField(default=0)

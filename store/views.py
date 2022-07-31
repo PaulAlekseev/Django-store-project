@@ -9,6 +9,9 @@ from .custom.constants import PRODUCTS_PER_PAGE
 
 
 class IndexCategoryView(generic.list.ListView):
+    """
+    Returns list at the roots of Category tree
+    """
     template_name = 'store/index.html'
     context_object_name = 'Categories'
 
@@ -18,6 +21,15 @@ class IndexCategoryView(generic.list.ListView):
 
 
 class CategoryListView(generic.list.ListView):
+    """
+    Returns list of Categories that is descandants of chosen Category
+    or
+    Returns list of Inner Categories that which are child classes of chosen Category
+    """
+
+    # Note: InnerCategory has a higher priority, so if there is Category 
+    # and InnerCategory instances, only only the last will be shown
+
     template_name = 'store/category.html'
     context_object_name = 'Categories'
 
@@ -30,6 +42,9 @@ class CategoryListView(generic.list.ListView):
 
 
 class ProductListView(generic.list.ListView):
+    """
+    Returns a list of Products ordered by name and filters them
+    """
     paginate_by = PRODUCTS_PER_PAGE
     template_name = 'store/product_list.html'
     context_object_name = 'Products'
@@ -59,6 +74,9 @@ class ProductListView(generic.list.ListView):
 
 
 class ProductDetailView(generic.detail.DetailView):
+    """
+    Return instance of Product and its reviews
+    """
     template_name = 'store/product_details.html'
     model = Product
     context_object_name = 'Product'
@@ -81,6 +99,9 @@ class ProductDetailView(generic.detail.DetailView):
 
 
 class SearchListView(generic.list.ListView):
+    """
+    Return list of products filtered with requested name
+    """    
     paginate_by = PRODUCTS_PER_PAGE
     template_name = 'store/search_product.html'
     context_object_name = 'Products'

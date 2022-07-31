@@ -18,17 +18,27 @@ from .models import CustomUser, Review, OrderProduct
 
 
 class CustomLoginView(LoginView):
-
+    """
+    View for user to login
+    """
     template_name = 'authentication/user/login.html'
     redirect_authenticated_user = True
     next_page = 'authentication:profile'
 
 
 class CustomLogoutView(LoginRequiredMixin, LogoutView):
+    """
+    View for user to logout
+    """
     next_page = 'store:index'
 
 
 class UserRegistrationFormView(generic.edit.FormView):
+    """
+    View for new User models creation
+    Creates model with is_active = False and send an
+    email to activate account
+    """
     template_name = 'authentication/user/registration.html'
     form_class = RegistrationForm
     success_url = 'store:index'
@@ -52,7 +62,9 @@ class UserRegistrationFormView(generic.edit.FormView):
 
 
 class UserActivationView(generic.base.View):
-
+    """
+    User activation view
+    """
     def get(self, *args, **kwargs):
         try:
             uid = force_str(urlsafe_base64_decode(self.kwargs.get('uidb64')))
@@ -69,6 +81,9 @@ class UserActivationView(generic.base.View):
 
 
 class UserProfileView(generic.list.ListView, LoginRequiredMixin):
+    """
+    Return list of Orders that user authenticated has made
+    """
     template_name = 'authentication/user/profile.html'
     context_object_name = 'Orders'
 
@@ -93,6 +108,9 @@ class UserProfileView(generic.list.ListView, LoginRequiredMixin):
 
 
 class UserReviewView(LoginRequiredMixin, generic.list.ListView):
+    """
+    Return list of Reviews that user authenticated has made
+    """
     template_name = 'authentication/user/profile_review.html'
     context_object_name = 'Reviews'
 
@@ -103,25 +121,40 @@ class UserReviewView(LoginRequiredMixin, generic.list.ListView):
 
 
 class CustomPasswordResetView(PasswordResetView):
+    """
+    Resets the password and send and email with confirmation link
+    """
     template_name = 'authentication/user/password_reset_form.html'
     email_template_name = "authentication/user/password_reset_email.html"
     success_url = reverse_lazy('authentication:password_reset_done')
 
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):
+    """
+    Succes url redirect on password reset
+    """
     template_name = 'authentication/user/password_reset_done.html'
 
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    """
+    Changes password of concrete user
+    """
     template_name = 'authentication/user/password_reset_confirm.html'
     success_url = reverse_lazy('authentication:password_reset_complete')
 
 
 class CustomPassworwResetCompleteView(PasswordResetCompleteView):
+    """
+    Success url redirect after password reset
+    """
     template_name = 'authentication/user/password_reset_complete.html'
 
 
 class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
+    """
+    Instantiate Review
+    """
     model = Review
     fields = ['review_pros', 'review_cons', 'review_commentary', 'rating']
     template_name = 'authentication/reviews/add_review.html'
@@ -157,6 +190,9 @@ class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
 
 
 class UpdateReviewView(LoginRequiredMixin, generic.edit.UpdateView):
+    """
+    Updates review
+    """
     fields = ['review_pros', 'review_cons', 'review_commentary', 'rating']
     template_name = 'authentication/reviews/update_review.html'
 
@@ -173,6 +209,9 @@ class UpdateReviewView(LoginRequiredMixin, generic.edit.UpdateView):
 
 
 class DeleteReviewView(LoginRequiredMixin, generic.edit.DeleteView):
+    """
+    Deletes review
+    """
     template_name = 'authentication/reviews/delete_review.html'
 
     def get_object(self):

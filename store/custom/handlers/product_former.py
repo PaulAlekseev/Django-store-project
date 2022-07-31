@@ -2,7 +2,9 @@ from .filter_handlers import filter_keyword_dictionary
 
 
 class ProductFormer:
-
+    """
+    Forms Product queryset based on filters
+    """
     def __init__(self, filter_handlers):
         self._filter_handlers = filter_handlers
         self._query = None

@@ -6,7 +6,9 @@ from store.models import Product
 
 
 class Basket:
-
+    """
+    Represents basket with products that user wants to buy
+    """
     def __init__(self, request):
         self.session = request.session
         self.query = None
