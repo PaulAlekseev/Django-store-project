@@ -28,7 +28,7 @@ class CategoryListView(generic.list.ListView):
     """
 
     # Note: InnerCategory has a higher priority, so if there is Category 
-    # and InnerCategory instances, only only the last will be shown
+    # and InnerCategory instances, only the last will be shown
 
     template_name = 'store/category.html'
     context_object_name = 'Categories'
