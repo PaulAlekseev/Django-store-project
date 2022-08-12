@@ -178,13 +178,15 @@ class Product(models.Model):
                 category.features = category_features
                 category.save()
 
-        return super().save(force_insert, force_update, using, update_fields)
+        super().save(force_insert, force_update, using, update_fields)
 
     def get_feature(self, feature_key):
         if not self.features:
             return None
         if feature_key in self.features:
             return self.features[feature_key]
+        else:
+            return None
 
 
 class StoreProduct(models.Model):
